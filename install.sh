@@ -92,7 +92,7 @@ install_base_packages() {
         sudo dnf install -y util-linux-user  # For chsh
     elif [ "$OS" = "ubuntu" ] || [ "$OS" = "debian" ]; then
         sudo apt update
-        sudo apt install -y zsh git curl wget unzip tar
+        sudo apt install -y zsh git curl wget unzip tar fontconfig
     else
         echo "⚠️  Unsupported distribution: $OS"
         echo "Install manually: zsh git curl wget unzip tar"
@@ -516,8 +516,7 @@ install_modern_tools() {
         if [ "$OS" = "fedora" ]; then
             sudo dnf install -y bat ripgrep fd-find zoxide fzf
         elif [ "$OS" = "ubuntu" ] || [ "$OS" = "debian" ]; then
-            sudo apt install -y bat ripgrep fd-find fzf
-            echo "⚠️  For zoxide on Ubuntu, consult official documentation"
+            sudo apt install -y bat ripgrep fd-find fzf zoxide
         fi
     fi
 }
@@ -552,18 +551,18 @@ choose_starship_theme() {
     echo "└─────────────────────────────────────────────────────────────┘" >&2
     echo "" >&2
 
-    local chosen_config=""
     while true; do
-        read -p "Choose theme [1/2]: " -n 1 -r THEME_CHOICE
+        echo -n "Choose theme [1/2]: " >&2
+        read -n 1 -r THEME_CHOICE < /dev/tty
         echo >&2
         case "$THEME_CHOICE" in
             1)
-                chosen_config="$SCRIPT_DIR/starship.toml"
+                CHOSEN_CONFIG="$SCRIPT_DIR/starship.toml"
                 echo "✓ Classic theme selected" >&2
                 break
                 ;;
             2)
-                chosen_config="$SCRIPT_DIR/starship-pure.toml"
+                CHOSEN_CONFIG="$SCRIPT_DIR/starship-pure.toml"
                 echo "✓ Pure theme selected" >&2
                 break
                 ;;
@@ -572,8 +571,6 @@ choose_starship_theme() {
                 ;;
         esac
     done
-
-    echo "$chosen_config"
 }
 
 # Apply Starship configuration
@@ -586,7 +583,7 @@ apply_starship_config() {
     if [ "$UPDATE_MODE" = true ]; then
         CHOSEN_CONFIG="$SCRIPT_DIR/starship.toml"
     else
-        CHOSEN_CONFIG=$(choose_starship_theme)
+        choose_starship_theme
     fi
 
     # Check if file exists and differs
@@ -798,7 +795,13 @@ merge_zshrc_config() {
     for plugin in "${REQUIRED_PLUGINS[@]}"; do
         if ! grep -q "$plugin" "$ZSHRC"; then
             echo "  + Adding plugin: $plugin"
-            sed -i "/^plugins=(/a\    $plugin" "$ZSHRC"
+            if grep -q "^plugins=.*)" "$ZSHRC"; then
+                # Single-line format: plugins=(git) → plugins=(git plugin)
+                sed -i "/^plugins=(/s/)$/ $plugin)/" "$ZSHRC"
+            else
+                # Multi-line format: append after plugins=( line
+                sed -i "/^plugins=(/a\    $plugin" "$ZSHRC"
+            fi
             CHANGES_MADE=true
         fi
     done

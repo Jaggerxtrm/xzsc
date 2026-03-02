@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.1.5 - 2026-03-02
+
+### 🐛 Bug Fixes
+
+- **installer**: add `fontconfig` to base packages — fixes silent crash after font download (`fc-cache: command not found` with `set -e`)
+- **installer**: fix theme selection prompt never appearing — `choose_starship_theme` was called in a subshell (`$()`), now sets global directly and reads from `/dev/tty`
+- **installer**: install `zoxide` on Debian/Ubuntu via `apt` (was silently skipped with a warning)
+- **installer**: fix zsh plugin insertion into single-line `plugins=(git)` arrays — plugins were appended outside the parentheses
+- **statusline**: theme-aware colors now match both `starship.toml` and `starship-pure.toml` exactly (bold cyan host, cyan branch for Classic; bold white user/dir, bold grey-242 branch, bold green status for Pure)
+- **statusline**: Pure theme git branch now attaches directly to directory with no space (`:branch*`)
+
 ## v2.2.0 - 2026-02-26
 
 ### 🎨 New: Pure Theme + npx Installer + Bug Fixes

@@ -8,10 +8,17 @@
 #
 # Requires: jq (for JSON parsing)
 
+# Detect active theme
+if grep -q "Style: Pure" "$HOME/.config/starship.toml" 2>/dev/null; then
+  THEME="pure"
+else
+  THEME="classic"
+fi
+
 # Read JSON input from stdin
 input=$(cat)
 
-# Extract model display name from JSON (cyan)
+# Extract model display name (cyan, not in starship — kept as meta info)
 model_display=$(echo "$input" | jq -r '.model.display_name // .model.id // "unknown"')
 
 # Extract token usage percentage
@@ -24,13 +31,11 @@ fi
 # Extract current directory from JSON
 dir=$(echo "$input" | jq -r '.workspace.current_dir')
 
-# Username (white)
+# Username and hostname
 user=$(whoami)
-
-# Hostname (bold green)
 host=$(hostname -s)
 
-# Directory (white, truncated to repo when inside git)
+# Directory (truncated to repo name when inside git)
 repo_root=$(cd "$dir" 2>/dev/null && git rev-parse --show-toplevel 2>/dev/null)
 if [ -n "$repo_root" ]; then
   rel_path=$(realpath --relative-to="$repo_root" "$dir" 2>/dev/null || echo ".")
@@ -43,33 +48,71 @@ else
   display_dir=$(echo "$dir" | sed "s|^$HOME|home|")
 fi
 
-# Git branch and status (green)
-git_info=""
-git_status_icon=""
+# Git info
+git_branch=""
+git_dirty=""
 if cd "$dir" 2>/dev/null && git rev-parse --git-dir >/dev/null 2>&1; then
-  branch=$(git -c core.useBuiltinFSMonitor=false branch --show-current 2>/dev/null || echo "HEAD")
-  # Git icon: U+F09B (nerd font)
-  git_icon=$(printf '\uf09b')
-  git_info=" $git_icon $branch"
-
-  # Check for modified files
-  status=$(git -c core.useBuiltinFSMonitor=false status --porcelain 2>/dev/null)
-  if [ -n "$status" ]; then
-    # Modified icon: U+F040 (nerd font)
-    mod_icon=$(printf '\uf040')
-    git_status_icon=" $mod_icon"
-  fi
+  git_branch=$(git -c core.useBuiltinFSMonitor=false branch --show-current 2>/dev/null || echo "HEAD")
+  git_dirty=$(git -c core.useBuiltinFSMonitor=false status --porcelain 2>/dev/null)
 fi
 
-# Python virtual environment (yellow)
-venv=""
+# Python virtual environment
+venv_name=""
 if [ -n "$VIRTUAL_ENV" ]; then
-  # Python icon: U+E73C (nerd font)
-  py_icon=$(printf '\ue73c')
-  venv=" $py_icon ($(basename "$VIRTUAL_ENV"))"
+  venv_name=$(basename "$VIRTUAL_ENV")
 fi
 
-# Output with ANSI colors matching Starship theme
-# Colors: cyan(36), white(37), bold green(1;32), green(32), yellow(33)
-printf '\033[36m%s\033[0m \033[37m%s\033[0m@\033[1;32m%s\033[0m \033[37m%s\033[0m\033[32m%s%s\033[0m\033[33m%s\033[0m' \
-  "$model_display" "$user" "$host" "$display_dir" "$git_info" "$git_status_icon" "$venv"
+# Build output
+out=""
+
+# Model: cyan (not in starship, kept as meta)
+out+=$(printf '\033[36m%s\033[0m' "$model_display")
+
+if [ "$THEME" = "pure" ]; then
+  # ── Pure theme ──────────────────────────────────────────────────────────────
+  # username: bold white (format: [$user@]($style))
+  out+=$(printf ' \033[1;37m%s@\033[0m' "$user")
+  # hostname: bold cyan
+  out+=$(printf '\033[1;36m%s\033[0m' "$host")
+  # directory: bold white
+  out+=$(printf ' \033[1;37m%s\033[0m' "$display_dir")
+  # git branch: bold color(242) — :branch directly after dir
+  if [ -n "$git_branch" ]; then
+    out+=$(printf '\033[1;38;5;242m:%s\033[0m' "$git_branch")
+    # git status: bold green — * directly after branch
+    if [ -n "$git_dirty" ]; then
+      out+=$(printf '\033[1;32m*\033[0m')
+    fi
+  fi
+  # python venv: #e0af68 amber — (venv_name)
+  if [ -n "$venv_name" ]; then
+    out+=$(printf ' \033[38;2;224;175;104m(%s)\033[0m' "$venv_name")
+  fi
+
+else
+  # ── Classic theme ────────────────────────────────────────────────────────────
+  # username: white (format: [$user]($style)@  — @ is outside the style)
+  out+=$(printf ' \033[37m%s\033[0m@' "$user")
+  # hostname: bold cyan
+  out+=$(printf '\033[1;36m%s\033[0m' "$host")
+  # directory: white
+  out+=$(printf ' \033[37m%s\033[0m' "$display_dir")
+  # git branch: cyan — format: [ $branch]($style)
+  if [ -n "$git_branch" ]; then
+    git_icon=$(printf '\uf09b')
+    out+=$(printf ' \033[36m%s %s\033[0m' "$git_icon" "$git_branch")
+    # git status: green — modified icon \uf040
+    if [ -n "$git_dirty" ]; then
+      mod_icon=$(printf '\uf040')
+      out+=$(printf ' \033[32m%s\033[0m' "$mod_icon")
+    fi
+  fi
+  # python venv: #e0af68 amber — (venv_name)
+  if [ -n "$venv_name" ]; then
+    py_icon=$(printf '\ue73c')
+    out+=$(printf ' \033[38;2;224;175;104m%s (%s)\033[0m' "$py_icon" "$venv_name")
+  fi
+
+fi
+
+printf '%s' "$out"

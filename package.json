@@ -1,6 +1,6 @@
 {
   "name": "zsh-starship-config",
-  "version": "2.1.2",
+  "version": "2.1.5",
   "description": "Automated Zsh + Starship + Nerd Fonts setup via npx",
   "bin": {
     "zsh-starship-config": "./bin/cli.js"
