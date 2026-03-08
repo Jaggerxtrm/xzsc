@@ -554,7 +554,7 @@ configure_zshrc() {
 
     ZSHRC="$HOME/.zshrc"
 
-    # If .zshrc doesn't exist, create new file
+    # If .zshrc doesn't exist, create complete file from template
     if [ ! -f "$ZSHRC" ]; then
         echo "Creating new .zshrc..."
         create_new_zshrc
@@ -563,46 +563,16 @@ configure_zshrc() {
         return
     fi
 
-    # .zshrc exists: make backup
+    # .zshrc exists: always merge to ensure all components are present
     BACKUP="$HOME/.zshrc.backup.$(date +%Y%m%d_%H%M%S)"
     cp "$ZSHRC" "$BACKUP"
-    echo "✓ Backup created: $BACKUP"
+    merge_zshrc_config  # idempotent — only adds what is missing
 
-    # Check if it already has Starship configuration
-    if grep -q "starship init zsh" "$ZSHRC"; then
-        echo "✓ Starship configuration already present"
-
-        # In UPDATE_MODE, ask if overwrite
-        if [ "$UPDATE_MODE" = true ]; then
-            read -p "Do you want to completely overwrite .zshrc? (y/N) " -n 1 -r
-            echo
-            if [[ $REPLY =~ ^[YySs]$ ]]; then
-                create_new_zshrc
-                echo "✓ .zshrc overwritten"
-                ZSHRC_UPDATED=true
-            else
-                echo "✓ .zshrc kept (use backup if needed: $BACKUP)"
-                merge_zshrc_config  # This sets ZSHRC_UPDATED or ZSHRC_UNCHANGED
-            fi
-        else
-            # Normal mode: add only missing elements (without useless backup)
-            rm -f "$BACKUP"
-            merge_zshrc_config  # This sets ZSHRC_UPDATED or ZSHRC_UNCHANGED
-        fi
+    # Remove backup if no changes were made
+    if [ "$ZSHRC_UNCHANGED" = true ]; then
+        rm -f "$BACKUP"
     else
-        # Doesn't have Starship: ask if overwrite or add
-        echo "⚠️  Existing .zshrc without Starship configuration"
-        read -p "Do you want to overwrite .zshrc? (y=overwrite, N=add Starship) " -n 1 -r
-        echo
-        if [[ $REPLY =~ ^[YySs]$ ]]; then
-            create_new_zshrc
-            echo "✓ .zshrc overwritten"
-            ZSHRC_UPDATED=true
-        else
-            add_starship_to_existing_zshrc
-            echo "✓ Starship added to existing .zshrc"
-            ZSHRC_UPDATED=true
-        fi
+        echo "  (backup: $BACKUP)"
     fi
 }
 
@@ -699,7 +669,7 @@ alias tsh='tmux split-window -h'
 th() {
     echo ""
     echo "  TMUX ALIASES"
-    echo "  ────────────────────────────────────"
+    echo "  ------------------------------------"
     echo "  ta <name>    attach to session"
     echo "  tl           list sessions"
     echo "  tn <name>    new session with name"
@@ -710,12 +680,12 @@ th() {
     echo "  ttheme <n>   apply theme to session"
     echo ""
     echo "  AVAILABLE THEMES"
-    echo "  ────────────────────────────────────"
+    echo "  ------------------------------------"
     echo "  cobalt  green  blue  purple  orange"
     echo "  red     nord   everforest   gruvbox"
     echo ""
     echo "  AUTO THEMES (from session name)"
-    echo "  ────────────────────────────────────"
+    echo "  ------------------------------------"
     echo "  *dev* *code*     → green"
     echo "  *research* *doc* → blue"
     echo "  *debug* *test*   → orange"
@@ -725,13 +695,22 @@ th() {
 
 # Apply tmux theme to current session: ttheme green
 ttheme() {
+    if [ -z "$TMUX" ]; then
+        echo "ttheme: not inside a tmux session"
+        return 1
+    fi
+    local theme="${1:-cobalt}"
     local session
     session=$(tmux display-message -p '#S' 2>/dev/null)
     if [ -z "$session" ]; then
-        echo "No active tmux session"
+        echo "ttheme: could not determine session name"
         return 1
     fi
-    bash -c "source ~/.tmux/themes.sh && apply_theme '$1' '$session'"
+    if [ ! -f "$HOME/.tmux/themes.sh" ]; then
+        echo "ttheme: $HOME/.tmux/themes.sh not found"
+        return 1
+    fi
+    bash "$HOME/.tmux/themes.sh" "$theme" "$session"
 }
 
 # Starship prompt
@@ -896,7 +875,7 @@ alias tsh='tmux split-window -h'
 th() {
     echo ""
     echo "  TMUX ALIASES"
-    echo "  ────────────────────────────────────"
+    echo "  ------------------------------------"
     echo "  ta <name>    attach to session"
     echo "  tl           list sessions"
     echo "  tn <name>    new session with name"
@@ -907,12 +886,12 @@ th() {
     echo "  ttheme <n>   apply theme to session"
     echo ""
     echo "  AVAILABLE THEMES"
-    echo "  ────────────────────────────────────"
+    echo "  ------------------------------------"
     echo "  cobalt  green  blue  purple  orange"
     echo "  red     nord   everforest   gruvbox"
     echo ""
     echo "  AUTO THEMES (from session name)"
-    echo "  ────────────────────────────────────"
+    echo "  ------------------------------------"
     echo "  *dev* *code*     → green"
     echo "  *research* *doc* → blue"
     echo "  *debug* *test*   → orange"
@@ -958,6 +937,47 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#707070'
 # History substring search — bold only, no vivid colors
 HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND='bold'
 HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND='fg=#cc7832'
+EOF
+        CHANGES_MADE=true
+    fi
+
+    # Check Starship init
+    if ! grep -q "starship init zsh" "$ZSHRC"; then
+        echo "  + Adding Starship prompt init"
+        cat >> "$ZSHRC" << 'EOF'
+
+# Starship prompt
+if command -v starship &> /dev/null; then
+    eval "$(starship init zsh)"
+fi
+EOF
+        CHANGES_MADE=true
+    fi
+
+    # Check ttheme function (the standalone bash script version)
+    if ! grep -q "bash.*themes.sh.*theme.*session\|apply_theme" "$ZSHRC"; then
+        echo "  + Adding ttheme function (themes.sh standalone)"
+        cat >> "$ZSHRC" << 'EOF'
+
+# Apply tmux theme to current session: ttheme green
+ttheme() {
+    if [ -z "$TMUX" ]; then
+        echo "ttheme: not inside a tmux session"
+        return 1
+    fi
+    local theme="${1:-cobalt}"
+    local session
+    session=$(tmux display-message -p '#S' 2>/dev/null)
+    if [ -z "$session" ]; then
+        echo "ttheme: could not determine session name"
+        return 1
+    fi
+    if [ ! -f "$HOME/.tmux/themes.sh" ]; then
+        echo "ttheme: $HOME/.tmux/themes.sh not found"
+        return 1
+    fi
+    bash "$HOME/.tmux/themes.sh" "$theme" "$session"
+}
 EOF
         CHANGES_MADE=true
     fi

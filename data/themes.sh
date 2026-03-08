@@ -10,10 +10,14 @@ apply_theme() {
     # session options (status bar)
     _set()  { tmux set-option -t "$session" "$@"; }
 
-    # window options — applied to ALL existing windows in the session
+    # window options — applied at session level + all existing windows
     _setw() {
-        tmux list-windows -t "$session" -F '#I' 2>/dev/null | while IFS= read -r win_id; do
-            tmux set-window-option -t "${session}:${win_id}" "$@" 2>/dev/null || true
+        # Session-level default (for new windows)
+        tmux set-option -t "$session" -w "$@" 2>/dev/null || true
+        # Apply immediately to all existing windows
+        tmux list-windows -t "$session" -F '#{window_index}' 2>/dev/null | \
+        while read -r idx; do
+            tmux set-option -t "${session}:${idx}" -w "$@" 2>/dev/null || true
         done
     }
 
@@ -129,3 +133,8 @@ apply_theme() {
 
     echo "Applied '$theme' theme to session '$session'"
 }
+
+# Run standalone: bash themes.sh <theme> <session>
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    apply_theme "$@"
+fi
