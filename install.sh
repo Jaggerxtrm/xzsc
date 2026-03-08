@@ -521,105 +521,28 @@ install_modern_tools() {
     fi
 }
 
-# Mostra il menu di scelta del tema Starship
-choose_starship_theme() {
-    echo "" >&2
-    echo "┌─────────────────────────────────────────────────────────────┐" >&2
-    echo "│              Choose your Starship prompt theme              │" >&2
-    echo "├─────────────────────────────────────────────────────────────┤" >&2
-    echo "│                                                             │" >&2
-    echo "│  1) Classic  (Nerd Fonts icons, two-line, full info)       │" >&2
-    echo "│                                                             │" >&2
-    echo "│     dawid@fedora ~/dev/myproject  master  ↑2              │" >&2
-    echo "│     >                                                       │" >&2
-    echo "│                                                             │" >&2
-    echo "│     • Nerd Font icons for git, languages, status           │" >&2
-    echo "│     • Two-line layout with username@host always visible    │" >&2
-    echo "│     • Requires a Nerd Font in your terminal                │" >&2
-    echo "│                                                             │" >&2
-    echo "├─────────────────────────────────────────────────────────────┤" >&2
-    echo "│                                                             │" >&2
-    echo "│  2) Pure     (minimal symbols, single-line, right prompt)  │" >&2
-    echo "│                                                             │" >&2
-    echo "│     ~/dev/myproject master*⇡          dawid@fedora        │" >&2
-    echo "│     \$                                                       │" >&2
-    echo "│                                                             │" >&2
-    echo "│     • Pure-style git symbols: * ⇡ ⇣ ⇡⇣ ≡                 │" >&2
-    echo "│     • username@host moved to right prompt                  │" >&2
-    echo "│     • Works with any monospace font                        │" >&2
-    echo "│                                                             │" >&2
-    echo "└─────────────────────────────────────────────────────────────┘" >&2
-    echo "" >&2
-
-    while true; do
-        echo -n "Choose theme [1/2]: " >&2
-        read -n 1 -r THEME_CHOICE < /dev/tty
-        echo >&2
-        case "$THEME_CHOICE" in
-            1)
-                CHOSEN_CONFIG="$SCRIPT_DIR/starship.toml"
-                echo "✓ Classic theme selected" >&2
-                break
-                ;;
-            2)
-                CHOSEN_CONFIG="$SCRIPT_DIR/starship-pure.toml"
-                echo "✓ Pure theme selected" >&2
-                break
-                ;;
-            *)
-                echo "Please enter 1 or 2." >&2
-                ;;
-        esac
-    done
-}
-
 # Apply Starship configuration
 apply_starship_config() {
     echo -e "\n⚙️  Applying Starship configuration..."
 
     mkdir -p "$HOME/.config"
 
-    # Let user choose theme (skip in update mode to avoid disrupting existing config)
-    if [ "$UPDATE_MODE" = true ]; then
-        CHOSEN_CONFIG="$SCRIPT_DIR/starship.toml"
-    else
-        choose_starship_theme
-    fi
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    local SRC="$SCRIPT_DIR/starship.toml"
 
-    # Check if file exists and differs
     if [ -f "$HOME/.config/starship.toml" ]; then
-        if ! diff -q "$CHOSEN_CONFIG" "$HOME/.config/starship.toml" &>/dev/null; then
-            echo "⚠️  starship.toml differs from repository version"
-
-            if [ "$UPDATE_MODE" = true ]; then
-                # Automatic backup and update in update mode
-                BACKUP="$HOME/.config/starship.toml.backup.$(date +%Y%m%d_%H%M%S)"
-                cp "$HOME/.config/starship.toml" "$BACKUP"
-                cp "$CHOSEN_CONFIG" "$HOME/.config/starship.toml"
-                echo "✓ starship.toml updated (backup: $BACKUP)"
-                STARSHIP_UPDATED=true
-            else
-                # Ask user in normal mode
-                read -p "Apply this theme? Your current config will be backed up. (y/N) " -n 1 -r
-                echo
-                if [[ $REPLY =~ ^[YySs]$ ]]; then
-                    BACKUP="$HOME/.config/starship.toml.backup.$(date +%Y%m%d_%H%M%S)"
-                    cp "$HOME/.config/starship.toml" "$BACKUP"
-                    cp "$CHOSEN_CONFIG" "$HOME/.config/starship.toml"
-                    echo "✓ starship.toml updated (backup: $BACKUP)"
-                    STARSHIP_UPDATED=true
-                else
-                    echo "⊘ starship.toml update skipped"
-                    STARSHIP_SKIPPED=true
-                fi
-            fi
+        if ! diff -q "$SRC" "$HOME/.config/starship.toml" &>/dev/null; then
+            BACKUP="$HOME/.config/starship.toml.backup.$(date +%Y%m%d_%H%M%S)"
+            cp "$HOME/.config/starship.toml" "$BACKUP"
+            cp "$SRC" "$HOME/.config/starship.toml"
+            echo "✓ starship.toml updated (backup: $BACKUP)"
+            STARSHIP_UPDATED=true
         else
             echo "✓ starship.toml already up to date"
             STARSHIP_UNCHANGED=true
         fi
     else
-        # New installation
-        cp "$CHOSEN_CONFIG" "$HOME/.config/starship.toml"
+        cp "$SRC" "$HOME/.config/starship.toml"
         echo "✓ starship.toml created"
         STARSHIP_UPDATED=true
     fi
