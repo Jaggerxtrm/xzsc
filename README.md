@@ -1,35 +1,29 @@
 # Zsh and Starship Configuration
 
-A complete and portable setup for a modern Zsh configuration with the Starship prompt, optimized for developers.
-
-## Screenshots
-
-The prompt displays:
-- Fedora Linux icon (or generic) and username
-- Current directory (white)
-- Git branch, GitHub icon, and detailed status
-- Python and virtual environment (when detected)
-- Command duration (if exceeding 2 seconds)
-
-Example:
-
-<img width="3840" height="2336" alt="image" src="https://github.com/user-attachments/assets/7aae75a5-85c1-46fc-a44a-8dad191a9b0c" />
-
+A complete and portable setup for a modern Zsh + Starship + tmux configuration. Neutral style, no Nerd Font required, adaptive to any tmux color theme.
 
 ## Features
 
 ### Prompt (Starship)
-- **Theme**: Green Theme combined with Tokyo Night
-- **Colors**: White text for username and directory, consistent green palette for the prompt
-- **Git**: Detailed icons for every status (modified, staged, untracked, ahead, behind, conflicts, etc.)
-- **Languages**: Automatically detects Python, Node.js, Rust, Go, PHP, Java
-- **Performance**: 500ms timeout, ensuring a fast and responsive prompt
+- **Theme**: Neutral/professional — no hardcoded colors, inherits terminal fg automatically
+- **Adaptive**: Works with all tmux themes (cobalt, green, blue, purple, orange, red, nord, everforest, gruvbox)
+- **No Nerd Font required**: uses plain Unicode symbols (`*` `+` `-` `↑` `↓` `↕`)
+- **Git**: branch, status (modified/staged/deleted/ahead/behind), state (rebase/merge/cherry-pick)
+- **Python venv**: shown on right prompt when active
+- **Format**: `hostname dir branch (status) $`
+
+### Tmux
+- **9 color themes**: cobalt (default), green, blue, purple, orange, red, nord, everforest, gruvbox
+- **Auto-theme**: session name determines theme automatically (`*dev*` → green, `*prod*` → red, etc.)
+- **`ttheme <name>`**: apply theme to current session instantly, all windows updated
+- **Plugins via TPM**: tmux-sensible, tmux-yank, tmux-resurrect, tmux-continuum
+- **Dual status bar**: current path + time on top, keybind cheatsheet on bottom
 
 ### Zsh (Oh My Zsh)
 - **Active Plugins**:
   - `git`: Aliases and functions for Git
   - `zsh-autosuggestions`: Suggestions while typing
-  - `zsh-syntax-highlighting`: Command syntax highlighting (Green Theme)
+  - `zsh-syntax-highlighting`: Neutral highlighting (bold/underline, no vivid colors)
   - `zsh-history-substring-search`: Search within history
   - `colored-man-pages`: Colored manual pages
   - `command-not-found`: Suggestions for missing commands
@@ -80,91 +74,76 @@ If the automatic installation fails:
 3. Select all `.ttf` files
 4. Right-click -> **Install**
 
-## Quick Installation
+## Installation
 
-### via npx (Recommended)
+### via npm (Recommended)
 
-No git clone required! Run directly from npm:
+Install directly from GitHub — no clone required:
 
 ```bash
-npx zsh-starship-config
+npm install -g github:Jaggerxtrm/zsh-starship-config
+zsh-starship-config
 ```
 
-### Manual Installation (Git Clone)
+Reload the shell when done:
 
 ```bash
+exec zsh
+```
+
+### Update
+
+Re-run the same install command to get the latest version:
+
+```bash
+npm install -g github:Jaggerxtrm/zsh-starship-config
+zsh-starship-config
+```
+
+> **Note:** `npm update -g` does not work for GitHub-installed packages. Use the install command above.
+
+### Manual (Git Clone)
+
+```bash
+git clone https://github.com/Jaggerxtrm/zsh-starship-config.git ~/projects/zsh-starship-config
 cd ~/projects/zsh-starship-config
-chmod +x install.sh
 ./install.sh
 ```
 
-> [!CAUTION]
-> **DO NOT** use `source ./install.sh` or `. ./install.sh`. This will cause your terminal session to exit when the script finishes. Always run it as an executable: `./install.sh`.
-
-### Update (v2.1.0+)
-
-**Recommended: Smart Update Script**
+Update mode (overwrites configs automatically without prompts):
 
 ```bash
-cd ~/projects/zsh-starship-config
-./update.sh
+cd ~/projects/zsh-starship-config && git pull && ./install.sh --update
 ```
-
-**What it does:**
-1. ✅ Checks for repository updates (git fetch)
-2. ✅ Shows recent changes before updating
-3. ✅ Compares installed vs available version
-4. ✅ Lists exactly what's missing (new aliases, configs, etc.)
-5. ✅ Asks for confirmation before updating
-6. ✅ Creates automatic backups of configurations
-7. ✅ Shows update summary after completion
-
-**Or use direct update mode:**
-
-```bash
-cd ~/projects/zsh-starship-config
-git pull
-./install.sh --update
-```
-
-**Update Mode Features (v2.1.0):**
-- ✅ **Version tracking**: Knows what version you have installed
-- ✅ **Smart diff checking**: Only updates changed files
-- ✅ **Incremental updates**: Adds missing features without overwriting
-- ✅ **Automatic backups**: Timestamped backups before any change
-- ✅ **Feature detection**: Detects and adds new aliases (lsga, lsg3, lsgm)
-- ✅ **Configuration preservation**: Your customizations are safe
-- ✅ **Update summary**: Shows what was updated/skipped
-
-**Check your current version:**
-```bash
-cat ~/.zsh-starship-config-version  # Shows: 2.1.0
-```
-
-See [CHANGELOG.md](CHANGELOG.md) for version history and [UPGRADE.md](UPGRADE.md) for detailed upgrade guide.
 
 ### Available Options
 
 ```bash
 ./install.sh           # Normal installation
-./install.sh --update  # Update mode (updates existing components)
+./install.sh --update  # Update mode (no prompts, auto-backup)
 ./install.sh --verbose # Detailed output
 ./install.sh --help    # Show all options
 ```
 
-## Installed Components
+**Check installed version:**
+```bash
+cat ~/.zsh-starship-config-version
+```
 
-The script will automatically install:
-1. Zsh
-2. Oh My Zsh
-3. Zsh Plugins (autosuggestions, syntax-highlighting, etc.)
-4. Starship
-5. Nerd Fonts (Meslo, JetBrains, Hack, FiraMono, Cousine)
-6. eza (modern ls with icons)
-7. jq (JSON parser for Claude Code)
-8. Custom configuration
-9. **Claude Code Status Line Enhanced** (model, usage percentage, git, venv)
-10. Modern extra tools (optional)
+## What Gets Installed
+
+The script automatically installs and configures:
+
+1. **Zsh** + Oh My Zsh
+2. **Zsh Plugins** (autosuggestions, syntax-highlighting, history-substring-search)
+3. **Starship** prompt (neutral/adaptive theme)
+4. **Nerd Fonts** (Meslo, JetBrains, Hack, FiraMono, Cousine)
+5. **tmux** + TPM + plugins (tmux-sensible, tmux-yank, tmux-resurrect, tmux-continuum)
+6. **tmux themes** (9 themes, auto-applied by session name)
+7. **eza** (modern `ls` with icons)
+8. **jq** (JSON parser, required for Claude Code status line)
+9. **Claude Code status line** (model name, token usage %, git status, venv)
+10. **Modern tools** (bat, ripgrep, fd, zoxide — optional)
 
 ### Manual Installation
 

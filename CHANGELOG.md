@@ -1,5 +1,33 @@
 # Changelog
 
+## v3.0.0 - 2026-03-08
+
+### Tmux Integration
+- **Add tmux + TPM + plugins** to installer: tmux-sensible, tmux-yank, tmux-resurrect, tmux-continuum
+- **9 color themes** added to repo (`data/themes.sh`): cobalt, green, blue, purple, orange, red, nord, everforest, gruvbox
+- **Auto-theme hook** (`data/apply-theme-hook.sh`): applies theme automatically based on session name
+- **`ttheme <name>`** function and tmux aliases (`ta`, `tl`, `tn`, `tk`, `tw`, `tsp`, `tsh`) added to `.zshrc` template
+- **`th`** function: shows tmux keybind and theme reference inline
+
+### Bug Fixes
+- **`_setw` in themes.sh**: now iterates ALL windows in the session via `list-windows` (previously only applied to current window)
+- **`refresh-client`** added after theme apply — changes are visible immediately without reattaching
+- **TPM plugin install**: replaced `tpm/bin/install_plugins` (requires live tmux server) with direct `git clone` — works on fresh VPS without any active session
+- **Starship theme menu removed**: was showing outdated Classic/Pure options; always applies `starship.toml` directly with auto-backup
+- **Double space in prompt**: removed fixed space before `$character` in format string; trailing spaces moved inside git module formats so they only appear when content is present
+
+### Installation Method
+- **Switch to GitHub npm install**: `npm install -g github:Jaggerxtrm/zsh-starship-config`
+- `npx zsh-starship-config` no longer works (package not on npmjs registry)
+- **Update**: re-run the install command (same as fresh install)
+
+### Neutral Starship Theme
+- Updated `starship.toml`: neutral/adaptive, no hardcoded colors, no Nerd Font required
+- `zsh-syntax-highlighting` styles updated to neutral (bold/underline only, no vivid colors)
+- `ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE` and history search highlight updated to neutral grey
+
+---
+
 ## v2.1.5 - 2026-03-02
 
 ### 🐛 Bug Fixes
