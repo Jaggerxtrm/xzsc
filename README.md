@@ -82,7 +82,7 @@ Install directly from GitHub — no clone required:
 
 ```bash
 npm install -g github:Jaggerxtrm/zsh-starship-config
-zsh-starship-config
+zsc install
 ```
 
 Reload the shell when done:
@@ -91,16 +91,35 @@ Reload the shell when done:
 exec zsh
 ```
 
-### Update
+### `zsc` CLI reference
 
-Re-run the same install command to get the latest version:
+After installing globally, the `zsc` command is available from anywhere:
 
 ```bash
-npm install -g github:Jaggerxtrm/zsh-starship-config
-zsh-starship-config
+zsc install                  # Full setup (first-time)
+zsc update                   # Update all components
+zsc update eza               # Update a single component
+zsc theme nord               # Apply a tmux colour theme
+zsc theme cobalt myproject   # Apply theme to a named session
+zsc status                   # Show installed versions + health check
+zsc help                     # Usage reference
 ```
 
-> **Note:** `npm update -g` does not work for GitHub-installed packages. Use the install command above.
+**Components** (`zsc update <component>`):
+`eza` `tmux` `starship` `fonts` `zshrc` `omz` `plugins` `statusline` `tools`
+
+**Themes** (`zsc theme <name>`):
+`cobalt` `green` `blue` `purple` `orange` `red` `nord` `everforest` `gruvbox`
+
+### Update
+
+```bash
+zsc update           # update everything
+zsc update starship  # update only starship
+zsc update eza       # update only eza
+```
+
+> **Note:** `npm update -g` does not work for GitHub-installed packages. Use `zsc update` instead, or re-run `npm install -g github:Jaggerxtrm/zsh-starship-config`.
 
 ### Manual (Git Clone)
 
@@ -116,13 +135,15 @@ Update mode (overwrites configs automatically without prompts):
 cd ~/projects/zsh-starship-config && git pull && ./install.sh --update
 ```
 
-### Available Options
+### Available `install.sh` flags
 
 ```bash
-./install.sh           # Normal installation
-./install.sh --update  # Update mode (no prompts, auto-backup)
-./install.sh --verbose # Detailed output
-./install.sh --help    # Show all options
+./install.sh                      # Full installation
+./install.sh --update             # Update mode (no prompts, auto-backup)
+./install.sh --update --only eza  # Update a single component
+./install.sh --status             # Health check only
+./install.sh --verbose            # Detailed output
+./install.sh --help               # Show all options
 ```
 
 **Check installed version:**

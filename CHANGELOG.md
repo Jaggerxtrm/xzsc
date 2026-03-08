@@ -1,5 +1,27 @@
 # Changelog
 
+## v3.1.0 - 2026-03-09
+
+### `zsc` CLI
+
+- **New `zsc` command**: `bin/cli.js` rewritten as a proper subcommand router (vanilla Node, zero dependencies)
+  - `zsc install` — full setup
+  - `zsc update [component]` — update all, or one: `eza`, `tmux`, `starship`, `fonts`, `zshrc`, `omz`, `plugins`, `statusline`, `tools`
+  - `zsc theme <name> [session]` — apply tmux colour theme live; auto-resolves session (current pane → first available)
+  - `zsc status` — show installed versions and health check
+  - `zsc help` — usage reference
+- **`"zsc"` bin alias** added to `package.json` alongside existing `zsh-starship-config`
+- **`--only <component>`** flag added to `install.sh` for targeted single-component updates
+- **`--status`** flag added to `install.sh` — runs `verify_installation` and exits
+
+### Bug Fixes
+
+- **tmux: aliases (`lt`, `ttheme`, eza, etc.) not working in panes** — `data/tmux.conf` now sets `set -g default-shell ZSHELL_PATH`; `install.sh` patches the placeholder with the real zsh binary path at install time via `patch_tmux_conf()`
+- **tmux: removed broken `run-shell ~/.tmux/themes.sh`** — was called with no session/theme arguments and produced silent errors; theming is already handled by the `after-new-session` hook
+- **tmux: dual status bar not appearing** — installer now warns when tmux < 3.0 is detected (`set -g status 2` requires 3.0+)
+
+---
+
 ## v3.0.0 - 2026-03-08
 
 ### Tmux Integration

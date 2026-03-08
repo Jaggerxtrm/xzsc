@@ -1,9 +1,10 @@
 {
   "name": "zsh-starship-config",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Automated Zsh + Starship + Nerd Fonts setup via npx",
   "bin": {
-    "zsh-starship-config": "./bin/cli.js"
+    "zsh-starship-config": "./bin/cli.js",
+    "zsc": "./bin/cli.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

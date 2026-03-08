@@ -14,6 +14,8 @@ fi
 UPDATE_MODE=false
 VERBOSE=false
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ONLY_COMPONENT=""   # set by --only <component>
+STATUS_MODE=false   # set by --status
 
 # Update tracking variables
 STARSHIP_UPDATED=false
@@ -57,6 +59,14 @@ while [[ $# -gt 0 ]]; do
         -h|--help)
             show_help
             exit 0
+            ;;
+        --only)
+            ONLY_COMPONENT="$2"
+            shift 2
+            ;;
+        --status)
+            STATUS_MODE=true
+            shift
             ;;
         *)
             echo "Unknown option: $1"
@@ -1223,6 +1233,21 @@ show_update_summary() {
     fi
 }
 
+# Patch .tmux.conf: replace ZSHELL_PATH placeholder with actual zsh binary
+patch_tmux_conf() {
+    local conf="$1"
+    local zsh_path
+    zsh_path=$(command -v zsh 2>/dev/null || echo "/bin/zsh")
+    sed -i "s|ZSHELL_PATH|$zsh_path|g" "$conf"
+
+    # Warn if tmux < 3.0 (dual status bar requires tmux 3.0+)
+    local tmux_major
+    tmux_major=$(tmux -V 2>/dev/null | grep -oP '\d+' | head -1)
+    if [ -n "$tmux_major" ] && [ "$tmux_major" -lt 3 ]; then
+        echo "  ⚠️  tmux ${tmux_major}.x detected — dual status bar requires tmux 3.0+. Consider upgrading."
+    fi
+}
+
 # Install tmux + TPM + plugins + themes
 install_tmux() {
     echo -e "\n🖥️  Installing tmux + themes + plugins..."
@@ -1268,6 +1293,7 @@ install_tmux() {
                     BACKUP="$HOME/.tmux.conf.backup.$(date +%Y%m%d_%H%M%S)"
                     cp "$HOME/.tmux.conf" "$BACKUP"
                     cp "$SCRIPT_DIR/data/tmux.conf" "$HOME/.tmux.conf"
+                    patch_tmux_conf "$HOME/.tmux.conf"
                     echo "✓ .tmux.conf updated (backup: $BACKUP)"
                 else
                     read -p "Apply tmux config? Current config will be backed up. (y/N) " -n 1 -r
@@ -1276,6 +1302,7 @@ install_tmux() {
                         BACKUP="$HOME/.tmux.conf.backup.$(date +%Y%m%d_%H%M%S)"
                         cp "$HOME/.tmux.conf" "$BACKUP"
                         cp "$SCRIPT_DIR/data/tmux.conf" "$HOME/.tmux.conf"
+                        patch_tmux_conf "$HOME/.tmux.conf"
                         echo "✓ .tmux.conf updated (backup: $BACKUP)"
                     else
                         echo "⊘ .tmux.conf update skipped"
@@ -1286,6 +1313,7 @@ install_tmux() {
             fi
         else
             cp "$SCRIPT_DIR/data/tmux.conf" "$HOME/.tmux.conf"
+            patch_tmux_conf "$HOME/.tmux.conf"
             echo "✓ .tmux.conf created"
         fi
     fi
@@ -1324,6 +1352,36 @@ install_tmux() {
 
 # Main
 main() {
+    # --status mode: just verify and exit
+    if [ "$STATUS_MODE" = true ]; then
+        detect_os
+        verify_installation
+        exit 0
+    fi
+
+    # --only <component> mode: run a single component and exit
+    if [ -n "$ONLY_COMPONENT" ]; then
+        detect_os
+        case "$ONLY_COMPONENT" in
+            eza)            install_eza ;;
+            tmux)           install_tmux ;;
+            starship)       install_starship ;;
+            fonts)          install_nerd_fonts ;;
+            zshrc)          configure_zshrc ;;
+            omz)            install_oh_my_zsh ;;
+            plugins)        install_zsh_plugins ;;
+            statusline)     install_claude_code_statusline ;;
+            tools)          install_modern_tools ;;
+            *)
+                echo "Unknown component: $ONLY_COMPONENT"
+                exit 1
+                ;;
+        esac
+        verify_installation
+        exit 0
+    fi
+
+    # Full install / update path
     install_base_packages
     install_oh_my_zsh
     install_zsh_plugins
