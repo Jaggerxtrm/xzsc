@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "server",
+  "dolt_database": "zsh_starship_config",
+  "project_id": "bf52b480-2ec9-4c7b-a6fb-1520ff062dda"
+}
