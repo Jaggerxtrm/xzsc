@@ -13,6 +13,7 @@ fi
 # Global variables
 UPDATE_MODE=false
 VERBOSE=false
+YES_MODE=false      # set by --yes / -y: auto-confirm all prompts
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ONLY_COMPONENT=""   # set by --only <component>
 STATUS_MODE=false   # set by --status
@@ -34,13 +35,15 @@ Automatic installation of Zsh + Starship + Nerd Fonts
 
 OPTIONS:
     -u, --update        Update mode: update already installed components
+    -y, --yes           Non-interactive: auto-confirm all prompts (CI/Docker)
     -v, --verbose       Verbose output
     -h, --help          Show this message
 
 EXAMPLES:
     ./install.sh                # Normal installation
     ./install.sh --update       # Update all components
-    ./install.sh -u -v          # Update with verbose output
+    ./install.sh -u -y          # Update non-interactively (no prompts)
+    ./install.sh -y             # Fresh install, auto-confirm everything
 
 EOF
 }
@@ -50,6 +53,10 @@ while [[ $# -gt 0 ]]; do
     case $1 in
         -u|--update)
             UPDATE_MODE=true
+            shift
+            ;;
+        -y|--yes)
+            YES_MODE=true
             shift
             ;;
         -v|--verbose)
@@ -518,16 +525,30 @@ EOF
 
 # Install modern tools (optional)
 install_modern_tools() {
-    echo -e "\n🛠️  Installing modern tools (optional)..."
+    echo -e "\n🛠️  Installing modern tools (bat, ripgrep, fd, zoxide, fzf)..."
 
-    read -p "Do you want to install bat, ripgrep, fd, zoxide? (y/N) " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[YySs]$ ]]; then
-        if [ "$OS" = "fedora" ]; then
+    local DO_INSTALL=false
+
+    if [ "$YES_MODE" = true ] || [ "$UPDATE_MODE" = true ]; then
+        DO_INSTALL=true
+    else
+        read -p "Install bat, ripgrep, fd, zoxide, fzf? These power the shell aliases. (Y/n) " -n 1 -r
+        echo
+        # Default to yes: empty reply or y/Y/s/S
+        if [[ -z "$REPLY" || "$REPLY" =~ ^[YySs]$ ]]; then
+            DO_INSTALL=true
+        fi
+    fi
+
+    if [ "$DO_INSTALL" = true ]; then
+        if [ "$OS" = "fedora" ] || [ "$OS" = "rhel" ] || [ "$OS" = "centos" ]; then
             sudo dnf install -y bat ripgrep fd-find zoxide fzf
         elif [ "$OS" = "ubuntu" ] || [ "$OS" = "debian" ]; then
             sudo apt install -y bat ripgrep fd-find fzf zoxide
         fi
+        echo "✓ Modern tools installed"
+    else
+        echo "⊘ Modern tools skipped (aliases for bat/rg/fd/z won't be active)"
     fi
 }
 
@@ -735,8 +756,10 @@ fi
 # Bun completions (if installed)
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
-# Alias for dotfiles management (Bare Git Repository)
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+# Alias for dotfiles management (Bare Git Repository) — only if ~/.cfg exists
+if [ -d "$HOME/.cfg" ]; then
+    alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+fi
 
 # Disable non-essential traffic and telemetry
 export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
@@ -843,13 +866,15 @@ EOF
         CHANGES_MADE=true
     fi
 
-    # Check dotfiles bare git alias
-    if ! grep -q "alias config=" "$ZSHRC"; then
-        echo "  + Adding dotfiles alias (config)"
+    # Check dotfiles bare git alias — only add if ~/.cfg exists
+    if [ -d "$HOME/.cfg" ] && ! grep -q "alias config=" "$ZSHRC"; then
+        echo "  + Adding dotfiles alias (config) — ~/.cfg detected"
         cat >> "$ZSHRC" << 'EOF'
 
-# Alias per gestire i dotfiles (Bare Git Repository)
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+# Alias for dotfiles management (Bare Git Repository) — only if ~/.cfg exists
+if [ -d "$HOME/.cfg" ]; then
+    alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+fi
 EOF
         CHANGES_MADE=true
     fi
@@ -1041,13 +1066,23 @@ EOF
 change_shell_to_zsh() {
     echo -e "\n🐚 Changing default shell to Zsh..."
 
-    if [ "$SHELL" = "$(which zsh)" ]; then
+    local ZSH_PATH
+    ZSH_PATH="$(which zsh)"
+
+    # Check both $SHELL and getent (handles cases where SHELL env isn't updated yet)
+    local CURRENT_SHELL
+    CURRENT_SHELL=$(getent passwd "$USER" 2>/dev/null | cut -d: -f7 || echo "$SHELL")
+
+    if [ "$CURRENT_SHELL" = "$ZSH_PATH" ] || [ "$SHELL" = "$ZSH_PATH" ]; then
         echo "✓ Zsh already default shell"
+    elif [ "$YES_MODE" = true ] || [ "$UPDATE_MODE" = true ]; then
+        chsh -s "$ZSH_PATH"
+        echo "✓ Shell changed to Zsh (requires logout)"
     else
-        read -p "Do you want to set Zsh as default shell? (y/N) " -n 1 -r
+        read -p "Do you want to set Zsh as default shell? (Y/n) " -n 1 -r
         echo
-        if [[ $REPLY =~ ^[YySs]$ ]]; then
-            chsh -s "$(which zsh)"
+        if [[ -z "$REPLY" || "$REPLY" =~ ^[YySs]$ ]]; then
+            chsh -s "$ZSH_PATH"
             echo "✓ Shell changed to Zsh (requires logout)"
         fi
     fi
@@ -1289,19 +1324,19 @@ install_tmux() {
         if [ -f "$HOME/.tmux.conf" ]; then
             if ! diff -q "$SCRIPT_DIR/data/tmux.conf" "$HOME/.tmux.conf" &>/dev/null; then
                 echo "⚠️  .tmux.conf differs from repository version"
-                if [ "$UPDATE_MODE" = true ]; then
+                if [ "$UPDATE_MODE" = true ] || [ "$YES_MODE" = true ]; then
                     BACKUP="$HOME/.tmux.conf.backup.$(date +%Y%m%d_%H%M%S)"
-                    cp "$HOME/.tmux.conf" "$BACKUP"
-                    cp "$SCRIPT_DIR/data/tmux.conf" "$HOME/.tmux.conf"
+                    cp -f "$HOME/.tmux.conf" "$BACKUP"
+                    cp -f "$SCRIPT_DIR/data/tmux.conf" "$HOME/.tmux.conf"
                     patch_tmux_conf "$HOME/.tmux.conf"
                     echo "✓ .tmux.conf updated (backup: $BACKUP)"
                 else
-                    read -p "Apply tmux config? Current config will be backed up. (y/N) " -n 1 -r
+                    read -p "Apply tmux config? Current config will be backed up. (Y/n) " -n 1 -r
                     echo
-                    if [[ $REPLY =~ ^[YySs]$ ]]; then
+                    if [[ -z "$REPLY" || "$REPLY" =~ ^[YySs]$ ]]; then
                         BACKUP="$HOME/.tmux.conf.backup.$(date +%Y%m%d_%H%M%S)"
-                        cp "$HOME/.tmux.conf" "$BACKUP"
-                        cp "$SCRIPT_DIR/data/tmux.conf" "$HOME/.tmux.conf"
+                        cp -f "$HOME/.tmux.conf" "$BACKUP"
+                        cp -f "$SCRIPT_DIR/data/tmux.conf" "$HOME/.tmux.conf"
                         patch_tmux_conf "$HOME/.tmux.conf"
                         echo "✓ .tmux.conf updated (backup: $BACKUP)"
                     else

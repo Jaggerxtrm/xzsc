@@ -79,7 +79,9 @@ main()
 | `zsc` command | bash invocation |
 |---|---|
 | `zsc install` | `install.sh` |
+| `zsc install --yes` | `install.sh --yes` |
 | `zsc update` | `install.sh --update` |
+| `zsc update --yes` | `install.sh --update --yes` |
 | `zsc update eza` | `install.sh --update --only eza` |
 | `zsc status` | `install.sh --status` |
 | `zsc theme nord` | `bash ~/.tmux/themes.sh nord <session>` |
@@ -110,6 +112,7 @@ Auto-theme logic in `apply-theme-hook.sh`:
 node bin/cli.js help
 node bin/cli.js update badcomponent   # should error with valid list
 node bin/cli.js theme badtheme        # should error with valid list
+node bin/cli.js install --yes         # should pass --yes to install.sh
 
 # Dry-run status check
 bash install.sh --status
