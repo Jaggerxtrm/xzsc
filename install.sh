@@ -693,6 +693,7 @@ th() {
     echo "  ------------------------------------"
     echo "  cobalt  green  blue  purple  orange"
     echo "  red     nord   everforest   gruvbox"
+    echo "  cream"
     echo ""
     echo "  AUTO THEMES (from session name)"
     echo "  ------------------------------------"
@@ -717,10 +718,13 @@ ttheme() {
         return 1
     fi
     if [ ! -f "$HOME/.tmux/themes.sh" ]; then
-        echo "ttheme: $HOME/.tmux/themes.sh not found"
+        echo "ttheme: $HOME/.tmux/themes.sh not found — run: zsc update"
         return 1
     fi
-    bash "$HOME/.tmux/themes.sh" "$theme" "$session"
+    if ! bash "$HOME/.tmux/themes.sh" "$theme" "$session"; then
+        echo "ttheme: theme may be missing from your installed themes — run: zsc update"
+        return 1
+    fi
 }
 
 # Starship prompt
@@ -899,6 +903,7 @@ th() {
     echo "  ------------------------------------"
     echo "  cobalt  green  blue  purple  orange"
     echo "  red     nord   everforest   gruvbox"
+    echo "  cream"
     echo ""
     echo "  AUTO THEMES (from session name)"
     echo "  ------------------------------------"
@@ -917,7 +922,10 @@ ttheme() {
         echo "No active tmux session"
         return 1
     fi
-    bash -c "source ~/.tmux/themes.sh && apply_theme '$1' '$session'"
+    if ! bash -c "source ~/.tmux/themes.sh && apply_theme '$1' '$session'"; then
+        echo "ttheme: theme may be missing from your installed themes — run: zsc update"
+        return 1
+    fi
 }
 EOF
         CHANGES_MADE=true
@@ -983,10 +991,13 @@ ttheme() {
         return 1
     fi
     if [ ! -f "$HOME/.tmux/themes.sh" ]; then
-        echo "ttheme: $HOME/.tmux/themes.sh not found"
+        echo "ttheme: $HOME/.tmux/themes.sh not found — run: zsc update"
         return 1
     fi
-    bash "$HOME/.tmux/themes.sh" "$theme" "$session"
+    if ! bash "$HOME/.tmux/themes.sh" "$theme" "$session"; then
+        echo "ttheme: theme may be missing from your installed themes — run: zsc update"
+        return 1
+    fi
 }
 EOF
         CHANGES_MADE=true
@@ -1323,7 +1334,7 @@ install_tmux() {
     chmod +x "$HOME/.tmux/themes.sh"
     cp "$SCRIPT_DIR/data/apply-theme-hook.sh" "$HOME/.tmux/apply-theme-hook.sh"
     chmod +x "$HOME/.tmux/apply-theme-hook.sh"
-    echo "✓ Tmux themes installed (cobalt, green, blue, purple, orange, red, nord, everforest, gruvbox)"
+    echo "✓ Tmux themes installed (cobalt, green, blue, purple, orange, red, nord, everforest, gruvbox, cream)"
 
     # Install TPM plugins by cloning directly (no tmux server required)
     echo "Installing TPM plugins..."
