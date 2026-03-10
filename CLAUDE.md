@@ -86,7 +86,7 @@ main()
 
 ## Tmux themes
 
-9 themes: `cobalt` (default), `green`, `blue`, `purple`, `orange`, `red`, `nord`, `everforest`, `gruvbox`.
+10 themes: `cobalt` (default), `green`, `blue`, `purple`, `orange`, `red`, `nord`, `everforest`, `gruvbox`, `cream`.
 
 Auto-theme logic in `apply-theme-hook.sh`:
 - Session name `*dev*`, `*code*`, `*claude*` → green
