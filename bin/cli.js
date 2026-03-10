@@ -14,7 +14,8 @@ const os = require('os');
 // Package root – one level above this file (bin/cli.js → project root)
 const SCRIPT_DIR = path.join(__dirname, '..');
 const installScript = path.join(SCRIPT_DIR, 'install.sh');
-const themesScript = path.join(os.homedir(), '.tmux', 'themes.sh');
+const themesScript = path.join(SCRIPT_DIR, 'data', 'themes.sh');
+const themesScriptDeployed = path.join(os.homedir(), '.tmux', 'themes.sh');
 
 // ---------------------------------------------------------------------------
 // Valid component / theme names
@@ -174,7 +175,7 @@ function cmdUpdate(component) {
 
 /**
  * zsc theme <name> [session]
- *   → bash ~/.tmux/themes.sh <name> <session>
+ *   → bash data/themes.sh <name> <session>  (syncs ~/.tmux/themes.sh as side-effect)
  */
 function cmdTheme(theme, sessionArg) {
   if (!theme) {
@@ -194,6 +195,13 @@ function cmdTheme(theme, sessionArg) {
     console.error('Run "zsc install" first to set up the tmux theme system.');
     process.exit(1);
   }
+
+  // Sync deployed copy so ttheme shell function and auto-theme hook stay fresh.
+  try {
+    fs.mkdirSync(path.dirname(themesScriptDeployed), { recursive: true });
+    fs.copyFileSync(themesScript, themesScriptDeployed);
+    fs.chmodSync(themesScriptDeployed, 0o755);
+  } catch (_) { /* non-fatal */ }
 
   const session = resolveTmuxSession(sessionArg);
   if (!session) {
