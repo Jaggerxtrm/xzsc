@@ -66,26 +66,26 @@ apply_theme() {
             _setw pane-active-border-style   'fg=#b48ead,bg=#251a30'
             ;;
 
-        # --- ORANGE (Testing/Debugging) ---
+        # --- ORANGE (Testing/Debugging — arancio pallido) ---
         orange|test|debug)
-            _set  status-style               'bg=#c98a3a,fg=#000000'
-            _set  window-status-style        'bg=#c98a3a,fg=#3a2200'
-            _set  window-status-current-style 'bg=#c98a3a,fg=#000000,bold'
-            _setw window-style               'bg=#c98a3a,fg=#2a1800'
-            _setw window-active-style        'bg=#c98a3a,fg=#000000'
-            _setw pane-border-style          'fg=#a06c28,bg=#c98a3a'
-            _setw pane-active-border-style   'fg=#000000,bg=#c98a3a'
+            _set  status-style               'bg=#c8a870,fg=#000000'
+            _set  window-status-style        'bg=#c8a870,fg=#3a2800'
+            _set  window-status-current-style 'bg=#c8a870,fg=#000000,bold'
+            _setw window-style               'bg=#c8a870,fg=#2a1c00'
+            _setw window-active-style        'bg=#c8a870,fg=#000000'
+            _setw pane-border-style          'fg=#a08850,bg=#c8a870'
+            _setw pane-active-border-style   'fg=#000000,bg=#c8a870'
             ;;
 
-        # --- RED (Production/Urgent) ---
+        # --- RED (Production/Urgent — rosso pallido) ---
         red|prod|urgent)
-            _set  status-style               'bg=#c4522a,fg=#000000'
-            _set  window-status-style        'bg=#c4522a,fg=#3a1000'
-            _set  window-status-current-style 'bg=#c4522a,fg=#000000,bold'
-            _setw window-style               'bg=#c4522a,fg=#2a0c00'
-            _setw window-active-style        'bg=#c4522a,fg=#000000'
-            _setw pane-border-style          'fg=#9a3e1e,bg=#c4522a'
-            _setw pane-active-border-style   'fg=#000000,bg=#c4522a'
+            _set  status-style               'bg=#c08080,fg=#000000'
+            _set  window-status-style        'bg=#c08080,fg=#3a0c0c'
+            _set  window-status-current-style 'bg=#c08080,fg=#000000,bold'
+            _setw window-style               'bg=#c08080,fg=#2a0808'
+            _setw window-active-style        'bg=#c08080,fg=#000000'
+            _setw pane-border-style          'fg=#a06060,bg=#c08080'
+            _setw pane-active-border-style   'fg=#000000,bg=#c08080'
             ;;
 
         # --- NORD (Artico, tonalità fredde) ---
@@ -121,9 +121,20 @@ apply_theme() {
             _setw pane-active-border-style   'fg=#fabd2f,bg=#282828'
             ;;
 
+        # --- CREAM (Neutro caldo, bianco sporco) ---
+        cream|warm|neutral)
+            _set  status-style               'bg=#d8d0b8,fg=#000000'
+            _set  window-status-style        'bg=#d8d0b8,fg=#4a4030'
+            _set  window-status-current-style 'bg=#d8d0b8,fg=#000000,bold'
+            _setw window-style               'bg=#d8d0b8,fg=#302820'
+            _setw window-active-style        'bg=#d8d0b8,fg=#000000'
+            _setw pane-border-style          'fg=#b8b098,bg=#d8d0b8'
+            _setw pane-active-border-style   'fg=#000000,bg=#d8d0b8'
+            ;;
+
         *)
             echo "Unknown theme: $theme"
-            echo "Available: cobalt, green, blue, purple, orange, red, nord, everforest, gruvbox"
+            echo "Available: cobalt, green, blue, purple, orange, red, nord, everforest, gruvbox, cream"
             return 1
             ;;
     esac
