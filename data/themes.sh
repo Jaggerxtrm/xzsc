@@ -132,9 +132,42 @@ apply_theme() {
             _setw pane-active-border-style   'fg=#000000,bg=#d8d0b8'
             ;;
 
+        # --- GRAY (Neutro, scale di grigio - dark) ---
+        gray|grey|mono)
+            _set  status-style               'bg=#2d3036,fg=#b0b8c0'
+            _set  window-status-style        'bg=#2d3036,fg=#5a626c'
+            _set  window-status-current-style 'bg=#2d3036,fg=#d0d8e0,bold'
+            _setw window-style               'bg=#2d3036,fg=#8a929c'
+            _setw window-active-style        'bg=#2d3036,fg=#e8ecf0'
+            _setw pane-border-style          'fg=#3d4148,bg=#2d3036'
+            _setw pane-active-border-style   'fg=#b0b8c0,bg=#2d3036'
+            ;;
+
+        # --- LIGHT GRAY (Neutro chiaro - light background) ---
+        lightgray|lightgrey|lightmono)
+            _set  status-style               'bg=#e8ecf0,fg=#3d4148'
+            _set  window-status-style        'bg=#e8ecf0,fg=#8a929c'
+            _set  window-status-current-style 'bg=#e8ecf0,fg=#2d3036,bold'
+            _setw window-style               'bg=#e8ecf0,fg=#5a626c'
+            _setw window-active-style        'bg=#e8ecf0,fg=#2d3036'
+            _setw pane-border-style          'fg=#c8cdd2,bg=#e8ecf0'
+            _setw pane-active-border-style   'fg=#5a626c,bg=#e8ecf0'
+            ;;
+
+        # --- ADAPTIVE (Works on light AND dark backgrounds) ---
+        adaptive|auto)
+            _set  status-style               'bg=default,fg=brightblack'
+            _set  window-status-style        'bg=default,fg=brightblack'
+            _set  window-status-current-style 'bg=default,fg=cyan,bold'
+            _setw window-style               'bg=default,fg=default'
+            _setw window-active-style        'bg=default,fg=default'
+            _setw pane-border-style          'fg=brightblack,bg=default'
+            _setw pane-active-border-style   'fg=cyan,bg=default'
+            ;;
+
         *)
             echo "Unknown theme: $theme"
-            echo "Available: cobalt, green, blue, purple, orange, red, nord, everforest, gruvbox, cream"
+            echo "Available: cobalt, green, blue, purple, orange, red, nord, everforest, gruvbox, cream, gray, lightgray, adaptive"
             return 1
             ;;
     esac

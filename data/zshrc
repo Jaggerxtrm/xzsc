@@ -1,0 +1,167 @@
+# PATH and Environment
+export PATH="$HOME/.local/bin:$PATH"
+export NVM_DIR="$HOME/.nvm"
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# Oh My Zsh configuration
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME=""
+
+# Plugins
+plugins=(
+    git
+    zsh-autosuggestions
+    zsh-syntax-highlighting
+    zsh-history-substring-search
+    colored-man-pages
+    command-not-found
+)
+
+source $ZSH/oh-my-zsh.sh
+
+# Syntax highlighting — adaptive for light/dark backgrounds (ANSI colors)
+ZSH_HIGHLIGHT_STYLES[command]='bold'
+ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=red,bold'
+ZSH_HIGHLIGHT_STYLES[builtin]='bold'
+ZSH_HIGHLIGHT_STYLES[alias]='bold,underline'
+ZSH_HIGHLIGHT_STYLES[path]='underline'
+ZSH_HIGHLIGHT_STYLES[globbing]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[precommand]='bold,underline'
+ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[redirection]='bold'
+ZSH_HIGHLIGHT_STYLES[comment]='italic,fg=black'
+
+# Autosuggestions — adapts to terminal theme (black = dark gray on light, light gray on dark)
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=black'
+
+# History substring search
+HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND='bold'
+HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND='fg=red'
+
+# FZF integration (se disponibile)
+if [ -f /usr/share/fzf/shell/key-bindings.zsh ]; then
+    source /usr/share/fzf/shell/key-bindings.zsh
+    export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
+    export FZF_CTRL_T_OPTS="--preview 'bat --color=always --line-range :500 {} 2>/dev/null || cat {}'"
+fi
+
+# Alias moderni (se i tool sono disponibili)
+if command -v eza &> /dev/null; then
+    alias ls='eza --icons --group-directories-first'
+    alias ll='eza -l --icons --group-directories-first'
+    alias la='eza -la --icons --group-directories-first'
+    alias lt='eza --tree --icons --group-directories-first --git-ignore --ignore-glob="venv|.venv|env|.env|node_modules|.git"'
+    alias lta='eza --tree --icons --group-directories-first'  # tree ALL (senza esclusioni)
+    alias lsga='eza --tree --icons --group-directories-first --git'  # tree ALL con git status
+    alias lsg3='eza --tree --level 3 --icons --group-directories-first --git'  # tree 3 livelli con git status
+    alias lsgm='git status -s'  # solo file modificati (git)
+fi
+
+if command -v bat &> /dev/null; then
+    alias cat='bat --style=auto'
+fi
+
+if command -v rg &> /dev/null; then
+    alias grep='rg'
+fi
+
+if command -v fd &> /dev/null; then
+    alias find='fd'
+fi
+
+if command -v zoxide &> /dev/null; then
+    alias cd='z'
+fi
+
+# Starship prompt
+if command -v starship &> /dev/null; then
+    eval "$(starship init zsh)"
+fi
+
+# NVM (se installato)
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+# Bun completions (se installato)
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+
+# Alias per gestire i dotfiles (Bare Git Repository)
+alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+
+# Disable non-essential traffic and telemetry
+export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+export DISABLE_TELEMETRY=1
+export DISABLE_ERROR_REPORTING=1
+# Qwen Account Rotation CLI
+# Now installed via pip as credential-rotation package
+# The account-qwen command is available through the package entry point
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
+
+# opencode
+export PATH=/home/dawid/.opencode/bin:$PATH
+export PATH="$HOME/.local/bin:$PATH"
+
+# Tmux session helper
+alias tmux-session='~/.local/bin/tmux-session'
+alias ts='tmux-session'
+
+# Ghostty theme switcher
+alias ghostty-themes='~/.local/bin/ghostty-themes'
+alias gt='ghostty-themes'
+
+# Tmux aliases
+alias ta='tmux attach -t'           # ta mysession
+alias tl='tmux ls'                  # lista sessioni
+alias tn='tmux new -s'              # tn mysession
+alias tk='tmux kill-session -t'     # tk mysession
+alias tw='tmux new-window'          # nuova finestra
+alias tsp='tmux split-window -v'    # split verticale
+alias tsh='tmux split-window -h'    # split orizzontale
+
+# Help alias tmux
+th() {
+    echo ""
+    echo "  TMUX ALIASES"
+    echo "  ────────────────────────────────────"
+    echo "  ta <nome>    attach a sessione"
+    echo "  tl           lista sessioni"
+    echo "  tn <nome>    nuova sessione con nome"
+    echo "  tk <nome>    kill sessione"
+    echo "  tw           nuova finestra"
+    echo "  tsp          split verticale (↕)"
+    echo "  tsh          split orizzontale (↔)"
+    echo "  ttheme <n>   applica tema alla sessione"
+    echo ""
+    echo "  TEMI DISPONIBILI"
+    echo "  ────────────────────────────────────"
+    echo "  cobalt  green  blue  purple  orange"
+    echo "  red     nord   everforest   gruvbox"
+    echo "  cream   gray   lightgray    adaptive"
+    echo ""
+    echo "  TEMI AUTO (dal nome sessione)"
+    echo "  ────────────────────────────────────"
+    echo "  *dev* *code*     → green"
+    echo "  *research* *doc* → blue"
+    echo "  *debug* *test*   → orange"
+    echo "  *prod* *urgent*  → red"
+    echo ""
+}
+
+# Applica tema alla sessione tmux corrente: ttheme green
+ttheme() {
+    local session
+    session=$(tmux display-message -p '#S' 2>/dev/null)
+    if [ -z "$session" ]; then
+        echo "Nessuna sessione tmux attiva"
+        return 1
+    fi
+    bash -c "source ~/.tmux/themes.sh && apply_theme '$1' '$session'"
+}
+
+# Zoxide initialization (must be last)
+if command -v zoxide &> /dev/null; then
+    eval "$(zoxide init zsh)"
+fi
