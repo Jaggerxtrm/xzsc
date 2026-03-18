@@ -3,7 +3,6 @@
 const fs = require('fs-extra');
 const path = require('path');
 const os = require('os');
-const yaml = require('js-yaml');
 
 const CONFIG_DIR = path.join(os.homedir(), '.zsc', 'config');
 const CONFIG_FILE = path.join(CONFIG_DIR, 'config.json');

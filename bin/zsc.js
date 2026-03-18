@@ -51,6 +51,11 @@ program
   .option('--timeout <seconds>', 'Set operation timeout', '300')
   .option('--retry <count>', 'Number of retries on failure', '3');
 
+const mergeOptions = (commandOptions = {}) => ({
+  ...program.opts(),
+  ...commandOptions
+});
+
 // Commands
 
 // zsc install [components...] [options]
@@ -66,7 +71,7 @@ program
   .option('--backup-prefix <prefix>', 'Prefix for backup files', 'backup')
   .action(async (components, options) => {
     showBanner();
-    await install(components, options, SCRIPT_DIR);
+    await install(components, mergeOptions(options), SCRIPT_DIR);
   });
 
 // zsc update [components...] [options]
@@ -78,7 +83,7 @@ program
   .option('-p, --parallel', 'Run operations in parallel')
   .action(async (components, options) => {
     showBanner();
-    await update(components, options, SCRIPT_DIR);
+    await update(components, mergeOptions(options), SCRIPT_DIR);
   });
 
 // zsc uninstall [components...] [options]
@@ -102,7 +107,7 @@ program
   .option('--export <path>', 'Export status to file')
   .action(async (components, options) => {
     showBanner();
-    await status(components, options, SCRIPT_DIR);
+    await status(components, mergeOptions(options), SCRIPT_DIR);
   });
 
 // zsc config [key] [value] [options]
@@ -116,7 +121,7 @@ program
   .option('--reset', 'Reset configuration to defaults')
   .action(async (key, value, options) => {
     showBanner();
-    await config(key, value, options, SCRIPT_DIR);
+    await config(key, value, mergeOptions(options), SCRIPT_DIR);
   });
 
 // zsc theme <name> [session] [options]
@@ -127,14 +132,15 @@ program
   .option('--auto', 'Auto-detect session')
   .option('--preview', 'Preview theme without applying')
   .action(async (themeName, session, options) => {
-    if (options.list) {
+    const merged = mergeOptions(options);
+    if (merged.list) {
       showBanner();
       const { displayThemeList } = require('../src/commands/theme');
       displayThemeList(require('../src/utils/logger').createLogger());
       return;
     }
     showBanner();
-    await theme(themeName, session, options, SCRIPT_DIR);
+    await theme(themeName, session, merged, SCRIPT_DIR);
   });
 
 // zsc backup [options]
@@ -146,7 +152,7 @@ program
   .option('--compress', 'Compress backup to zip')
   .action(async (options) => {
     showBanner();
-    await backup(options, SCRIPT_DIR);
+    await backup(mergeOptions(options), SCRIPT_DIR);
   });
 
 // zsc reload
@@ -156,7 +162,7 @@ program
   .option('--verbose', 'Show detailed output')
   .action(async (options) => {
     showBanner();
-    await reload(options, SCRIPT_DIR);
+    await reload(mergeOptions(options), SCRIPT_DIR);
   });
 
 // zsc restore [options]
@@ -167,7 +173,7 @@ program
   .option('--dry-run', 'Preview restoration without applying')
   .action(async (options) => {
     showBanner();
-    await reload(options, SCRIPT_DIR);
+    await reload(mergeOptions(options), SCRIPT_DIR);
   });
 
 // zsc rollback [options]
@@ -179,7 +185,7 @@ program
   .option('--dry-run', 'Preview rollback without applying')
   .action(async (options) => {
     showBanner();
-    await rollback(options, SCRIPT_DIR);
+    await rollback(mergeOptions(options), SCRIPT_DIR);
   });
 
 // zsc help

@@ -94,12 +94,14 @@ async function update(components = [], options = {}, scriptDir) {
       logger.step(stepNumber, totalSteps, `Updating ${componentId}...`);
 
       try {
-        const updater = loadComponentUpdater(componentId, scriptDir);
-        const result = await updater.update(configManager, logger, options);
-        
+        const result = await componentManager.update(componentId, {
+          ...options,
+          scriptDir
+        });
+
         if (result.success) {
           logger.success(`✓ ${componentId} updated successfully`);
-          results.push({ component: componentId, success: true });
+          results.push({ component: componentId, success: true, unchanged: result.unchanged || false });
         } else if (result.unchanged) {
           logger.info(`ℹ ${componentId} already up to date`);
           results.push({ component: componentId, success: true, unchanged: true });
@@ -186,37 +188,17 @@ function resolveComponents(components, only = null, exclude = null, componentMan
 }
 
 /**
- * Load component updater
- */
-function loadComponentUpdater(componentId, scriptDir) {
-  const { execute } = require('../utils/system');
-  const updateScript = path.join(scriptDir, 'update.sh');
-
-  return {
-    update: async (configManager, logger, options) => {
-      const args = ['--update', `--only=${componentId}`];
-      if (options.yes) args.push('--yes');
-      
-      logger.debug(`Running update script with args: ${args.join(' ')}`);
-      
-      const result = execute(`bash "${updateScript}" ${args.join(' ')}`);
-      
-      if (!result.success) {
-        throw new Error(result.stderr || 'Update script failed');
-      }
-      
-      return { success: true };
-    }
-  };
-}
-
-/**
  * Prompt for confirmation
  */
 async function promptConfirmation(components) {
   const inquirer = require('inquirer');
-  
-  const answer = await inquirer.prompt([
+  const prompt = inquirer.prompt || inquirer.default?.prompt;
+
+  if (!prompt) {
+    throw new Error('Interactive prompts are unavailable (inquirer import failed).');
+  }
+
+  const answer = await prompt([
     {
       type: 'confirm',
       name: 'confirm',

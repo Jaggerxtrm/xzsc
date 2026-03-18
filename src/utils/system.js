@@ -1,6 +1,7 @@
 'use strict';
 
 const os = require('os');
+const path = require('path');
 const { execSync } = require('child_process');
 
 /**
