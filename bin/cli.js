@@ -22,7 +22,7 @@ const themesScriptDeployed = path.join(os.homedir(), '.tmux', 'themes.sh');
 // ---------------------------------------------------------------------------
 
 const COMPONENTS = ['eza', 'tmux', 'starship', 'fonts', 'zshrc', 'omz', 'plugins', 'statusline', 'tools'];
-const THEMES = ['cobalt', 'green', 'blue', 'purple', 'orange', 'red', 'nord', 'everforest', 'gruvbox', 'cream'];
+const THEMES = ['cobalt', 'green', 'blue', 'purple', 'orange', 'red', 'nord', 'everforest', 'gruvbox', 'cream', 'gray', 'lightgray', 'adaptive', 'lblue', 'lgreen', 'lorange', 'lred'];
 
 // ---------------------------------------------------------------------------
 // Usage text
@@ -46,6 +46,7 @@ Components (for update):
 
 Themes (for theme):
   cobalt  green  blue  purple  orange  red  nord  everforest  gruvbox  cream
+  gray  lightgray  adaptive  lblue  lgreen  lorange  lred
 
 Examples:
   zsc install
