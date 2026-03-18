@@ -198,4 +198,37 @@ function getAutoTheme(sessionName) {
   return 'cobalt'; // Default
 }
 
-module.exports = { theme };
+/**
+ * Display available themes
+ */
+function displayThemeList(logger) {
+  logger.section('Available Themes');
+
+  const tableHeaders = ['Theme', 'Description', 'Auto-trigger'];
+  const tableRows = [
+    ['cobalt', 'Blue/gray professional theme', 'N/A'],
+    ['green', 'Green development theme', '*dev*, *code*'],
+    ['blue', 'Blue research theme', '*research*, *doc*'],
+    ['purple', 'Purple calm theme', 'N/A'],
+    ['orange', 'Orange warning theme', '*debug*, *test*'],
+    ['red', 'Red urgent theme', '*prod*, *urgent*'],
+    ['nord', 'Nord dark theme', 'N/A'],
+    ['everforest', 'Everforest green theme', 'N/A'],
+    ['gruvbox', 'Gruvbox retro theme', 'N/A'],
+    ['cream', 'Cream light theme', 'N/A']
+  ];
+
+  logger.table(tableHeaders, tableRows);
+
+  console.log('\nUsage:');
+  console.log('  zsc theme <name> [session]    - Apply specific theme');
+  console.log('  zsc theme --auto               - Auto-detect session');
+  console.log('  zsc theme --list              - List all themes');
+  console.log('\nAuto-theming (based on session name):');
+  
+  for (const [pattern, theme] of Object.entries(THEME_AUTO_RULES)) {
+    console.log(`  ${pattern.padEnd(20)} → ${theme}`);
+  }
+}
+
+module.exports = { theme, displayThemeList };

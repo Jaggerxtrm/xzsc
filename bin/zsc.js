@@ -24,13 +24,11 @@ const SCRIPT_DIR = path.join(__dirname, '..');
 // ASCII Art Banner
 function showBanner() {
   console.log(
-    chalk.cyan(
-      figlet.textSync('ZSC', {
-        font: 'Standard',
-        horizontalLayout: 'default',
-        verticalLayout: 'default'
-      })
-    )
+    chalk.cyan(figlet.textSync('ZSC', {
+      font: 'Standard',
+      horizontalLayout: 'default',
+      verticalLayout: 'default'
+    }))
   );
   console.log(chalk.gray(`Zsh Starship Config CLI v${VERSION}\n`));
 }
@@ -46,7 +44,7 @@ program
 program
   .option('--dry-run', 'Preview changes without applying them')
   .option('-y, --yes', 'Auto-confirm all prompts (non-interactive mode)')
-  .option('-v, --verbose', 'Show detailed output')
+  .option('--verbose', 'Show detailed output')
   .option('-s, --silent', 'Suppress output')
   .option('-f, --force', 'Override safety checks')
   .option('--timeout <seconds>', 'Set operation timeout', '300')
@@ -122,12 +120,18 @@ program
 
 // zsc theme <name> [session] [options]
 program
-  .command('theme <name> [session]')
+  .command('theme [name] [session]')
   .description('Apply a tmux color theme')
   .option('-l, --list', 'List available themes')
   .option('--auto', 'Auto-detect session')
   .option('--preview', 'Preview theme without applying')
   .action(async (themeName, session, options) => {
+    if (options.list) {
+      showBanner();
+      const { displayThemeList } = require('../src/commands/theme');
+      displayThemeList(require('../src/utils/logger').createLogger());
+      return;
+    }
     showBanner();
     await theme(themeName, session, options, SCRIPT_DIR);
   });
