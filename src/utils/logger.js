@@ -12,7 +12,7 @@ class Logger {
   constructor(options = {}) {
     this.silent = options.silent || false;
     this.verbose = options.verbose || false;
-    this.dryRun = options.dryRun || false;
+    this.isDryRun = options.dryRun || false;
     this.spinners = new Map();
   }
 
@@ -51,7 +51,7 @@ class Logger {
     };
 
     const color = colors[level] || chalk.white;
-    const prefix = this.dryRun ? chalk.magenta('[DRY RUN] ') : '';
+    const prefix = this.isDryRun ? chalk.magenta('[DRY RUN] ') : '';
     const levelTag = `[${level.toUpperCase()}] `.padEnd(10);
     
     console.log(prefix + color(levelTag) + message);
@@ -85,7 +85,7 @@ class Logger {
 
   // Spinner utilities
   startSpinner(id, text, options = {}) {
-    if (this.silent || this.dryRun) return;
+    if (this.silent || this.isDryRun) return;
 
     const spinner = ora({
       text,

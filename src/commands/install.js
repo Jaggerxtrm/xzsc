@@ -1,6 +1,5 @@
 'use strict';
 
-const path = require('path');
 const { createLogger } = require('../utils/logger');
 const ErrorHandler = require('../utils/error-handler');
 const ConfigManager = require('../utils/config-manager');
@@ -55,18 +54,12 @@ async function install(components = [], options = {}, scriptDir) {
     // Resolve components to install
     const componentsToInstall = resolveComponents(components, options.only, options.exclude);
     
-    logger.info(`Components to install: ${componentsToInstall.join(', ')}`);
+    const installOrder = componentManager.getInstallOrder(componentsToInstall);
+
+    logger.info(`Components to install: ${installOrder.join(', ')}`);
     logger.section('Installation Process');
 
-    // Validate components
-    const validation = await componentManager.validateMany(componentsToInstall);
-    if (!validation.allValid) {
-      logger.error('Validation failed for some components:');
-      validation.errors.forEach(err => {
-        logger.error(`  - ${err.component}: ${err.error}`);
-      });
-      process.exit(1);
-    }
+    await componentManager.scanSystem();
 
     // Check system compatibility
     const systemInfo = await checkSystemCompatibility(logger);
@@ -81,7 +74,7 @@ async function install(components = [], options = {}, scriptDir) {
       logger.banner('DRY RUN MODE', 'magenta');
       logger.info('No changes will be applied');
       
-      for (const componentId of componentsToInstall) {
+      for (const componentId of installOrder) {
         const component = componentManager.getComponent(componentId);
         logger.dryRun(`Would install: ${component.name}`);
       }
@@ -91,7 +84,7 @@ async function install(components = [], options = {}, scriptDir) {
 
     // Prompt for confirmation if not in yes mode
     if (!options.yes && !options.dryRun) {
-      const confirm = await promptConfirmation(componentsToInstall);
+      const confirm = await promptConfirmation(installOrder);
       if (!confirm) {
         logger.info('Installation cancelled');
         process.exit(0);
@@ -123,21 +116,21 @@ async function install(components = [], options = {}, scriptDir) {
     // Install components
     const startTime = Date.now();
     let stepNumber = 1;
-    const totalSteps = componentsToInstall.length;
+    const totalSteps = installOrder.length;
 
     const results = [];
     const errors = [];
 
-    for (const componentId of componentsToInstall) {
+    for (const componentId of installOrder) {
       logger.step(stepNumber, totalSteps, `Installing ${componentId}...`);
 
       try {
-        // Load and run component installer
-        const installer = loadComponentInstaller(componentId, scriptDir);
-        const result = await installer.install(configManager, logger, options);
-        
+        const result = await componentManager.install(componentId, {
+          ...options,
+          scriptDir
+        });
+
         if (result.success) {
-          componentManager.markInstalled(componentId);
           logger.success(`✓ ${componentId} installed successfully`);
           results.push({ component: componentId, success: true });
         } else {
@@ -232,34 +225,6 @@ function resolveComponents(components, only = null, exclude = null) {
 }
 
 /**
- * Load component installer
- */
-function loadComponentInstaller(componentId, scriptDir) {
-  // For now, we'll use the shell script wrapper
-  // In the future, this will load specific component installers
-  
-  const { execute } = require('../utils/system');
-  const installScript = path.join(scriptDir, 'install.sh');
-
-  return {
-    install: async (configManager, logger, options) => {
-      const args = ['--update', `--only=${componentId}`];
-      if (options.yes) args.push('--yes');
-      
-      logger.debug(`Running install script with args: ${args.join(' ')}`);
-      
-      const result = execute(`bash "${installScript}" ${args.join(' ')}`);
-      
-      if (!result.success) {
-        throw new Error(result.stderr || 'Install script failed');
-      }
-      
-      return { success: true };
-    }
-  };
-}
-
-/**
  * Check system compatibility
  */
 async function checkSystemCompatibility(logger) {
@@ -292,8 +257,13 @@ async function checkSystemCompatibility(logger) {
  */
 async function promptConfirmation(components) {
   const inquirer = require('inquirer');
-  
-  const answer = await inquirer.prompt([
+  const prompt = inquirer.prompt || inquirer.default?.prompt;
+
+  if (!prompt) {
+    throw new Error('Interactive prompts are unavailable (inquirer import failed).');
+  }
+
+  const answer = await prompt([
     {
       type: 'confirm',
       name: 'confirm',
