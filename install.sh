@@ -1059,7 +1059,7 @@ add_starship_to_existing_zshrc() {
     # Add Starship init at end
     cat >> "$ZSHRC" << 'EOF'
 
-# Starship prompt (added by zsh-starship-config installer)
+# Starship prompt (added by xzsc installer)
 if command -v starship &> /dev/null; then
     eval "$(starship init zsh)"
 fi
@@ -1476,7 +1476,7 @@ main() {
     # Save installed version for tracking
     if [ -f "$SCRIPT_DIR/VERSION" ]; then
         RELEASE_VERSION=$(cat "$SCRIPT_DIR/VERSION")
-        echo "$RELEASE_VERSION" > "$HOME/.zsh-starship-config-version"
+        echo "$RELEASE_VERSION" > "$HOME/.xzsc-version"
     fi
 }
 

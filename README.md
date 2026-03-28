@@ -21,7 +21,7 @@ A robust and feature-rich CLI installer that provides a complete Zsh, Starship, 
 
 ```bash
 # Install globally via npm
-npm install -g @jaggerxtrm/zsh-starship-config
+npm install -g xzsc
 
 # Run installer
 zsc install
@@ -608,7 +608,7 @@ For enhanced features, the following are optional but recommended:
 ### Project Structure
 
 ```
-zsh-starship-config/
+xzsc/
 ├── bin/
 │   └── zsc.js              # Main CLI entry point
 ├── src/
@@ -670,8 +670,8 @@ npm test -- logger.test.js
 
 ```bash
 # Clone repository
-git clone https://github.com/Jaggerxtrm/zsh-starship-config.git
-cd zsh-starship-config
+git clone https://github.com/Jaggerxtrm/xzsc.git
+cd xzsc
 
 # Install dependencies
 npm install
@@ -708,9 +708,9 @@ See [CHANGELOG.md](CHANGELOG.md) for version history and changes.
 
 ## Support
 
-- **GitHub Issues**: https://github.com/Jaggerxtrm/zsh-starship-config/issues
-- **Documentation**: https://github.com/Jaggerxtrm/zsh-starship-config/wiki
-- **Discussions**: https://github.com/Jaggerxtrm/zsh-starship-config/discussions
+- **GitHub Issues**: https://github.com/Jaggerxtrm/xzsc/issues
+- **Documentation**: https://github.com/Jaggerxtrm/xzsc/wiki
+- **Discussions**: https://github.com/Jaggerxtrm/xzsc/discussions
 
 ## Acknowledgments
 

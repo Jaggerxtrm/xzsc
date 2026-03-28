@@ -40,9 +40,9 @@ This file provides context for AI coding assistants (Claude Code, etc.) working 
 A portable, one-command installer for a modern Zsh + Starship + tmux environment.
 Target users: developers setting up a new Linux machine (Fedora, RHEL, Ubuntu, Debian) or WSL2.
 
-Distributed as an npm package installed from GitHub:
+Distributed as an npm package:
 ```bash
-npm install -g github:Jaggerxtrm/zsh-starship-config
+npm install -g xzsc
 zsc install
 ```
 
@@ -52,7 +52,7 @@ zsc install
 |---|---|
 | `install.sh` | Main bash installer (~1400 lines). All install logic lives here as named functions. |
 | `bin/cli.js` | Node.js CLI entry point. Routes `zsc` subcommands to `install.sh` flags or bash scripts. Zero npm deps. |
-| `package.json` | npm package definition. Two bin entries: `zsh-starship-config` and `zsc`. |
+| `package.json` | npm package definition. Two bin entries: `xzsc` and `zsc`. |
 | `data/tmux.conf` | tmux configuration deployed to `~/.tmux.conf`. Contains `ZSHELL_PATH` placeholder replaced at install time. |
 | `data/themes.sh` | Bash library: `apply_theme <theme> <session>`. Deployed to `~/.tmux/themes.sh`. |
 | `data/apply-theme-hook.sh` | Runs on `after-new-session` hook; auto-selects theme from session name. |

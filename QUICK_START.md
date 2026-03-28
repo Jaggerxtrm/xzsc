@@ -4,12 +4,18 @@
 
 ### Via npx (Raccomandato)
 ```bash
-npx zsh-starship-config
+npx xzsc
+```
+
+### Via npm (globale)
+```bash
+npm install -g xzsc
+zsc install
 ```
 
 ### Via Git
 ```bash
-cd ~/projects/zsh-starship-config
+cd ~/projects/xzsc
 ./install.sh
 ```
 

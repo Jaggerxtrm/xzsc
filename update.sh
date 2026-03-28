@@ -61,7 +61,7 @@ if [ -d ".git" ]; then
     echo ""
 else
     echo "${YELLOW}⚠️  Not a git repository - cannot check for updates${NC}"
-    echo "Consider cloning from: https://github.com/Jaggerxtrm/zsh-starship-config"
+    echo "Consider cloning from: https://github.com/Jaggerxtrm/xzsc"
     echo ""
 fi
 
@@ -87,7 +87,7 @@ echo "Config Version: v$REPO_VERSION"
 echo ""
 
 # Check installed versions
-INSTALLED_VERSION_FILE="$HOME/.zsh-starship-config-version"
+INSTALLED_VERSION_FILE="$HOME/.xzsc-version"
 if [ -f "$INSTALLED_VERSION_FILE" ]; then
     INSTALLED_VERSION=$(cat "$INSTALLED_VERSION_FILE")
     echo "Installed Version: v$INSTALLED_VERSION"

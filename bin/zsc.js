@@ -8,10 +8,11 @@ const figlet = require('figlet');
 const chalk = require('chalk');
 
 // Import commands
-const { install } = require('../src/commands/install');
+const { install, VALID_COMPONENTS, ALIASES } = require('../src/commands/install');
 const { update } = require('../src/commands/update');
+const { uninstall } = require('../src/commands/uninstall');
 const { status } = require('../src/commands/status');
-const { theme } = require('../src/commands/theme');
+const { theme, displayThemeList } = require('../src/commands/theme');
 const { config } = require('../src/commands/config');
 const { rollback } = require('../src/commands/rollback');
 const { backup } = require('../src/commands/backup');
@@ -72,7 +73,24 @@ program
   .action(async (components, options) => {
     showBanner();
     await install(components, mergeOptions(options), SCRIPT_DIR);
-  });
+  })
+  .addHelpText('after', `
+Components:
+  ${VALID_COMPONENTS.join(' · ')}
+
+Aliases:
+  full / all / dev   All components (default)
+  basic              zsh, ohMyZsh, plugins, starship, fonts, zshrc
+  minimal            zsh, starship, fonts, zshrc
+
+Examples:
+  $ zsc install                         Full install (default)
+  $ zsc install minimal                 Minimal preset
+  $ zsc install tmux tmuxPlugins        Specific components
+  $ zsc install --exclude fonts         All except fonts
+  $ zsc install tmux --dry-run          Preview without applying
+  $ zsc install -y                      Non-interactive
+`);
 
 // zsc update [components...] [options]
 program
@@ -84,7 +102,18 @@ program
   .action(async (components, options) => {
     showBanner();
     await update(components, mergeOptions(options), SCRIPT_DIR);
-  });
+  })
+  .addHelpText('after', `
+Components:
+  ${VALID_COMPONENTS.join(' · ')}
+
+Examples:
+  $ zsc update                     Update all installed components
+  $ zsc update eza                 Update specific component
+  $ zsc update tmux tmuxPlugins    Update multiple components
+  $ zsc update --exclude fonts     Update all except fonts
+  $ zsc update --dry-run           Preview without applying
+`);
 
 // zsc uninstall [components...] [options]
 program
@@ -95,8 +124,18 @@ program
   .option('--keep-config', 'Keep configuration files')
   .action(async (components, options) => {
     showBanner();
-    console.log(chalk.yellow('Uninstall functionality will be implemented in future release'));
-  });
+    await uninstall(components, mergeOptions(options), SCRIPT_DIR);
+  })
+  .addHelpText('after', `
+Components:
+  ${VALID_COMPONENTS.join(' · ')}
+
+Examples:
+  $ zsc uninstall eza               Uninstall specific component
+  $ zsc uninstall tmux tmuxPlugins  Uninstall multiple components
+  $ zsc uninstall --dry-run         Preview without applying
+  $ zsc uninstall --force           Override dependency checks
+`);
 
 // zsc status [components...] [options]
 program
@@ -128,20 +167,36 @@ program
 program
   .command('theme [name] [session]')
   .description('Apply a tmux color theme')
-  .option('-l, --list', 'List available themes')
+  .option('-l, --list', 'List available themes with descriptions')
   .option('--auto', 'Auto-detect session')
   .option('--preview', 'Preview theme without applying')
   .action(async (themeName, session, options) => {
     const merged = mergeOptions(options);
     if (merged.list) {
       showBanner();
-      const { displayThemeList } = require('../src/commands/theme');
       displayThemeList(require('../src/utils/logger').createLogger());
       return;
     }
     showBanner();
     await theme(themeName, session, merged, SCRIPT_DIR);
-  });
+  })
+  .addHelpText('after', `
+Themes:
+  cobalt (default) · green · blue · purple · orange · red
+  nord · everforest · gruvbox · cream · gray · lightgray · adaptive
+  lblue · lgreen · lorange · lred
+
+Auto-theme rules (based on session name):
+  *dev*, *code*      → green
+  *research*, *doc*  → blue
+  *debug*, *test*    → orange
+  *prod*, *urgent*   → red
+
+Examples:
+  $ zsc theme nord               Apply to current session
+  $ zsc theme green mysession    Apply to specific session
+  $ zsc theme --list             Full theme list with descriptions
+`);
 
 // zsc backup [options]
 program
@@ -168,13 +223,26 @@ program
 // zsc restore [options]
 program
   .command('restore')
-  .description('Restore configuration from backup')
-  .option('-i, --input <path>', 'Input backup file')
+  .description('Restore configuration from a rollback point')
+  .option('-s, --step <n>', 'Rollback specific number of steps', '1')
+  .option('--list', 'List available restore points')
   .option('--dry-run', 'Preview restoration without applying')
   .action(async (options) => {
     showBanner();
-    await reload(mergeOptions(options), SCRIPT_DIR);
-  });
+    await rollback(mergeOptions(options), SCRIPT_DIR);
+  })
+  .addHelpText('after', `
+Note:
+  Restores from rollback points created automatically by zsc install/update.
+  Use 'zsc rollback' for the same functionality with more options.
+  Use 'zsc backup' to create manual snapshots.
+
+Examples:
+  $ zsc restore                  Restore to last point
+  $ zsc restore --list           Show available restore points
+  $ zsc restore --step 2         Restore 2 steps back
+  $ zsc restore --dry-run        Preview without applying
+`);
 
 // zsc rollback [options]
 program

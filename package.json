@@ -1,10 +1,10 @@
 {
-  "name": "@jaggerxtrm/zsh-starship-config",
+  "name": "xzsc",
   "version": "4.0.0",
   "description": "Modern Zsh + Starship + Nerd Fonts setup via npm",
   "main": "src/index.js",
   "bin": {
-    "zsh-starship-config": "./bin/zsc.js",
+    "xzsc": "./bin/zsc.js",
     "zsc": "./bin/zsc.js"
   },
   "scripts": {
@@ -33,7 +33,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Jaggerxtrm/zsh-starship-config.git"
+    "url": "https://github.com/Jaggerxtrm/xzsc.git"
   },
   "engines": {
     "node": ">=14.0.0"

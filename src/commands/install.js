@@ -202,7 +202,8 @@ function resolveComponents(components, only = null, exclude = null) {
     } else if (COMPONENTS.includes(component)) {
       expanded.push(component);
     } else {
-      throw new Error(`Unknown component or alias: ${component}`);
+      const validOptions = [...Object.keys(ALIASES), ...COMPONENTS].join(', ');
+      throw new Error(`Unknown component or alias: "${component}"\nValid options: ${validOptions}`);
     }
   }
 
@@ -296,4 +297,4 @@ function printSummary(results, errors, duration, logger) {
   logger.info(`\nDuration: ${duration}s`);
 }
 
-module.exports = { install };
+module.exports = { install, VALID_COMPONENTS: COMPONENTS, ALIASES };

@@ -1,6 +1,6 @@
-# 🔄 Guida Update - Zsh Starship Config
+# 🔄 Guida Update - xzsc
 
-Questa guida spiega come aggiornare una installazione esistente di zsh-starship-config.
+Questa guida spiega come aggiornare una installazione esistente di xzsc.
 
 ## 📋 Cosa cambia nella nuova versione
 
@@ -25,7 +25,7 @@ Questa guida spiega come aggiornare una installazione esistente di zsh-starship-
 ### Metodo 1: Update automatico (raccomandato)
 
 ```bash
-cd ~/projects/zsh-starship-config
+cd ~/projects/xzsc
 git pull  # Aggiorna il repository
 ./install.sh --update
 ```
@@ -176,7 +176,7 @@ source ~/.zshrc
 
 **Soluzione 1 (automatica):**
 ```bash
-cd ~/projects/zsh-starship-config
+cd ~/projects/xzsc
 ./install.sh --update
 # Lo script reinstallerà i font su Windows
 ```
@@ -216,7 +216,7 @@ Get-ChildItem *.ttf | ForEach-Object {
 
 ```bash
 # Ogni 1-2 mesi
-cd ~/projects/zsh-starship-config
+cd ~/projects/xzsc
 git pull
 ./install.sh --update
 ```
