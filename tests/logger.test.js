@@ -26,7 +26,7 @@ describe('Logger', () => {
       expect(logger).toBeDefined();
       expect(logger.silent).toBe(false);
       expect(logger.verbose).toBe(false);
-      expect(logger.dryRun).toBe(false);
+      expect(logger.isDryRun).toBe(false);
     });
 
     test('should initialize with custom options', () => {
@@ -37,7 +37,7 @@ describe('Logger', () => {
       });
       expect(logger.silent).toBe(true);
       expect(logger.verbose).toBe(true);
-      expect(logger.dryRun).toBe(true);
+      expect(logger.isDryRun).toBe(true);
     });
   });
 

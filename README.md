@@ -21,7 +21,7 @@ A robust and feature-rich CLI installer that provides a complete Zsh, Starship, 
 
 ```bash
 # Install globally via npm
-npm install -g xzsc
+npm install -g @jaggerxtrm/xzsc
 
 # Run installer
 zsc install

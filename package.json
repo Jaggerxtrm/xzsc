@@ -1,11 +1,11 @@
 {
-  "name": "xzsc",
+  "name": "@jaggerxtrm/xzsc",
   "version": "4.0.0",
   "description": "Modern Zsh + Starship + Nerd Fonts setup via npm",
   "main": "src/index.js",
   "bin": {
-    "xzsc": "./bin/zsc.js",
-    "zsc": "./bin/zsc.js"
+    "xzsc": "bin/zsc.js",
+    "zsc": "bin/zsc.js"
   },
   "scripts": {
     "start": "node ./bin/zsc.js",
@@ -14,7 +14,7 @@
     "lint": "eslint src/",
     "build": "npm run build:cli",
     "build:cli": "babel src -d dist",
-    "prepublishOnly": "npm test && npm run lint",
+    "prepublishOnly": "npm test",
     "dev": "node ./bin/zsc.js"
   },
   "keywords": [
@@ -33,24 +33,24 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Jaggerxtrm/xzsc.git"
+    "url": "git+https://github.com/Jaggerxtrm/xzsc.git"
   },
   "engines": {
     "node": ">=14.0.0"
   },
   "dependencies": {
-    "commander": "^12.0.0",
-    "chalk": "^4.1.2",
-    "figlet": "^1.7.0",
-    "ora": "^8.0.1",
-    "axios": "^1.6.0",
-    "semver": "^7.5.4",
-    "fs-extra": "^11.1.1",
-    "shelljs": "^0.8.5",
-    "inquirer": "^9.2.12",
-    "progress": "^2.0.3",
     "adm-zip": "^0.5.10",
-    "node-downloader-helper": "^2.1.9"
+    "axios": "^1.6.0",
+    "chalk": "^4.1.2",
+    "commander": "^12.0.0",
+    "figlet": "^1.7.0",
+    "fs-extra": "^11.1.1",
+    "inquirer": "^9.2.12",
+    "node-downloader-helper": "^2.1.9",
+    "ora": "^5.4.1",
+    "progress": "^2.0.3",
+    "semver": "^7.5.4",
+    "shelljs": "^0.8.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.22.0",

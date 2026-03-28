@@ -4,12 +4,12 @@
 
 ### Via npx (Raccomandato)
 ```bash
-npx xzsc
+npx @jaggerxtrm/xzsc
 ```
 
 ### Via npm (globale)
 ```bash
-npm install -g xzsc
+npm install -g @jaggerxtrm/xzsc
 zsc install
 ```
 

@@ -42,7 +42,7 @@ Target users: developers setting up a new Linux machine (Fedora, RHEL, Ubuntu, D
 
 Distributed as an npm package:
 ```bash
-npm install -g xzsc
+npm install -g @jaggerxtrm/xzsc
 zsc install
 ```
 
