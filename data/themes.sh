@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # ============================================
 # TMUX COLOR THEMES
+# Contrast-Corrected, Graphite-Based
 # ============================================
 
 apply_theme() {
@@ -21,198 +22,292 @@ apply_theme() {
         done
     }
 
+    # ============================================
+    # GLOBAL TEXT PALETTE
+    # ============================================
+    # Dark themes: primary=#b8bcc0, strong=#c6cacf, muted=#8a8f94
+    # Light themes: primary=#3f4347, strong=#2f3336, muted=#7a8086
+    # Accents reserved for borders/highlights only
+
     case "$theme" in
-        # --- COBALT (Default, blu-grigio scuro) ---
-        cobalt|default|"")
-            _set  status-style               'bg=#1c212b,fg=#8fbcbb'
-            _set  window-status-style        'bg=#1c212b,fg=#4c566a'
-            _set  window-status-current-style 'bg=#1c212b,fg=#8fbcbb,bold'
-            _setw window-style               'bg=#1c212b,fg=#9aa3b0'
-            _setw window-active-style        'bg=#1c212b,fg=#d8dee9'
-            _setw pane-border-style          'fg=#2e3440,bg=#1c212b'
-            _setw pane-active-border-style   'fg=#5e81ac,bg=#1c212b'
+        # ============================================
+        # DARK THEMES
+        # ============================================
+
+        # --- GRAPHITE (DEFAULT DARK - Neutral Accent) ---
+        graphite|default|dark|"")
+            # Background: #141414
+            _set  status-style               'fg=#b8bcc0,bg=#141414'
+            _set  window-status-style        'fg=#8a8f94,bg=#141414'
+            _set  window-status-current-style 'fg=#c6cacf,bg=#141414,bold'
+            _setw window-style               'fg=#8a8f94,bg=#141414'
+            _setw window-active-style        'fg=#b8bcc0,bg=#141414'
+            _setw pane-border-style          'fg=#303030,bg=#141414'
+            _setw pane-active-border-style   'fg=#6f767d,bg=#141414'
+            _set  message-style              'fg=#c6cacf,bg=#222222'
             ;;
 
-        # --- GREEN (Dev/Coding — verde menta) ---
+        # --- COBALT (Accent: #5f87a8) ---
+        cobalt)
+            # Background: #1b2128
+            _set  status-style               'fg=#b8bcc0,bg=#1b2128'
+            _set  window-status-style        'fg=#8a8f94,bg=#1b2128'
+            _set  window-status-current-style 'fg=#c6cacf,bg=#1b2128,bold'
+            _setw window-style               'fg=#8a8f94,bg=#1b2128'
+            _setw window-active-style        'fg=#b8bcc0,bg=#1b2128'
+            _setw pane-border-style          'fg=#2a2a2a,bg=#1b2128'
+            _setw pane-active-border-style   'fg=#5f87a8,bg=#1b2128'
+            _set  message-style              'fg=#c6cacf,bg=#242424'
+            ;;
+
+        # --- GREEN (Dev/Coding - Accent: #98c379) ---
         green|dev|coding)
-            _set  status-style               'bg=#1a2b1a,fg=#a3be8c'
-            _set  window-status-style        'bg=#1a2b1a,fg=#3d5a3d'
-            _set  window-status-current-style 'bg=#1a2b1a,fg=#a3be8c,bold'
-            _setw window-style               'bg=#1a2b1a,fg=#8aab8a'
-            _setw window-active-style        'bg=#1a2b1a,fg=#d8efd8'
-            _setw pane-border-style          'fg=#2e472e,bg=#1a2b1a'
-            _setw pane-active-border-style   'fg=#a3be8c,bg=#1a2b1a'
+            # Background: #182018
+            _set  status-style               'fg=#b8bcc0,bg=#182018'
+            _set  window-status-style        'fg=#8a8f94,bg=#182018'
+            _set  window-status-current-style 'fg=#c6cacf,bg=#182018,bold'
+            _setw window-style               'fg=#8a8f94,bg=#182018'
+            _setw window-active-style        'fg=#b8bcc0,bg=#182018'
+            _setw pane-border-style          'fg=#2a2a2a,bg=#182018'
+            _setw pane-active-border-style   'fg=#98c379,bg=#182018'
+            _set  message-style              'fg=#c6cacf,bg=#222222'
             ;;
 
-        # --- BLUE (Research/Learning — blu acceso) ---
+        # --- BLUE (Research/Learning - Accent: #7aa2d2) ---
         blue|research|learning)
-            _set  status-style               'bg=#1a2233,fg=#81a1c1'
-            _set  window-status-style        'bg=#1a2233,fg=#37476a'
-            _set  window-status-current-style 'bg=#1a2233,fg=#88c0d0,bold'
-            _setw window-style               'bg=#1a2233,fg=#7a96b5'
-            _setw window-active-style        'bg=#1a2233,fg=#d8eaf5'
-            _setw pane-border-style          'fg=#2a3a52,bg=#1a2233'
-            _setw pane-active-border-style   'fg=#81a1c1,bg=#1a2233'
+            # Background: #181d26
+            _set  status-style               'fg=#b8bcc0,bg=#181d26'
+            _set  window-status-style        'fg=#8a8f94,bg=#181d26'
+            _set  window-status-current-style 'fg=#c6cacf,bg=#181d26,bold'
+            _setw window-style               'fg=#8a8f94,bg=#181d26'
+            _setw window-active-style        'fg=#b8bcc0,bg=#181d26'
+            _setw pane-border-style          'fg=#2a2a2a,bg=#181d26'
+            _setw pane-active-border-style   'fg=#7aa2d2,bg=#181d26'
+            _set  message-style              'fg=#c6cacf,bg=#232323'
             ;;
 
-        # --- PURPLE (Creative/Writing — viola lavanda) ---
+        # --- PURPLE (Creative/Writing - Accent: #b294d2) ---
         purple|creative|writing)
-            _set  status-style               'bg=#251a30,fg=#b48ead'
-            _set  window-status-style        'bg=#251a30,fg=#4a3560'
-            _set  window-status-current-style 'bg=#251a30,fg=#c9a8d4,bold'
-            _setw window-style               'bg=#251a30,fg=#9a7aaa'
-            _setw window-active-style        'bg=#251a30,fg=#ead8f0'
-            _setw pane-border-style          'fg=#3d2a50,bg=#251a30'
-            _setw pane-active-border-style   'fg=#b48ead,bg=#251a30'
+            # Background: #201824
+            _set  status-style               'fg=#b8bcc0,bg=#201824'
+            _set  window-status-style        'fg=#8a8f94,bg=#201824'
+            _set  window-status-current-style 'fg=#c6cacf,bg=#201824,bold'
+            _setw window-style               'fg=#8a8f94,bg=#201824'
+            _setw window-active-style        'fg=#b8bcc0,bg=#201824'
+            _setw pane-border-style          'fg=#2a2a2a,bg=#201824'
+            _setw pane-active-border-style   'fg=#b294d2,bg=#201824'
+            _set  message-style              'fg=#c6cacf,bg=#252525'
             ;;
 
-        # --- ORANGE (Testing/Debugging — arancio pallido) ---
+        # --- ORANGE (Testing/Debugging - Accent: #d7a65f) ---
         orange|test|debug)
-            _set  status-style               'bg=#c8a870,fg=#000000'
-            _set  window-status-style        'bg=#c8a870,fg=#3a2800'
-            _set  window-status-current-style 'bg=#c8a870,fg=#000000,bold'
-            _setw window-style               'bg=#c8a870,fg=#2a1c00'
-            _setw window-active-style        'bg=#c8a870,fg=#000000'
-            _setw pane-border-style          'fg=#a08850,bg=#c8a870'
-            _setw pane-active-border-style   'fg=#000000,bg=#c8a870'
+            # Background: #221b16
+            _set  status-style               'fg=#b8bcc0,bg=#221b16'
+            _set  window-status-style        'fg=#8a8f94,bg=#221b16'
+            _set  window-status-current-style 'fg=#c6cacf,bg=#221b16,bold'
+            _setw window-style               'fg=#8a8f94,bg=#221b16'
+            _setw window-active-style        'fg=#b8bcc0,bg=#221b16'
+            _setw pane-border-style          'fg=#2a2a2a,bg=#221b16'
+            _setw pane-active-border-style   'fg=#d7a65f,bg=#221b16'
+            _set  message-style              'fg=#c6cacf,bg=#262626'
             ;;
 
-        # --- RED (Production/Urgent — rosso pallido) ---
+        # --- RED (Production/Urgent - Accent: #d38686) ---
         red|prod|urgent)
-            _set  status-style               'bg=#c08080,fg=#000000'
-            _set  window-status-style        'bg=#c08080,fg=#3a0c0c'
-            _set  window-status-current-style 'bg=#c08080,fg=#000000,bold'
-            _setw window-style               'bg=#c08080,fg=#2a0808'
-            _setw window-active-style        'bg=#c08080,fg=#000000'
-            _setw pane-border-style          'fg=#a06060,bg=#c08080'
-            _setw pane-active-border-style   'fg=#000000,bg=#c08080'
+            # Background: #241717
+            _set  status-style               'fg=#b8bcc0,bg=#241717'
+            _set  window-status-style        'fg=#8a8f94,bg=#241717'
+            _set  window-status-current-style 'fg=#c6cacf,bg=#241717,bold'
+            _setw window-style               'fg=#8a8f94,bg=#241717'
+            _setw window-active-style        'fg=#b8bcc0,bg=#241717'
+            _setw pane-border-style          'fg=#2a2a2a,bg=#241717'
+            _setw pane-active-border-style   'fg=#d38686,bg=#241717'
+            _set  message-style              'fg=#c6cacf,bg=#282828'
             ;;
 
-        # --- NORD (Artico, tonalità fredde) ---
+        # --- NORD (Accent: #88c0d0) ---
         nord)
-            _set  status-style               'bg=#2e3440,fg=#88c0d0'
-            _set  window-status-style        'bg=#2e3440,fg=#4c566a'
-            _set  window-status-current-style 'bg=#2e3440,fg=#81a1c1,bold'
-            _setw window-style               'bg=#2e3440,fg=#7a96aa'
-            _setw window-active-style        'bg=#2e3440,fg=#eceff4'
-            _setw pane-border-style          'fg=#3b4252,bg=#2e3440'
-            _setw pane-active-border-style   'fg=#88c0d0,bg=#2e3440'
+            # Background: #1f252d
+            _set  status-style               'fg=#b8bcc0,bg=#1f252d'
+            _set  window-status-style        'fg=#8a8f94,bg=#1f252d'
+            _set  window-status-current-style 'fg=#c6cacf,bg=#1f252d,bold'
+            _setw window-style               'fg=#8a8f94,bg=#1f252d'
+            _setw window-active-style        'fg=#b8bcc0,bg=#1f252d'
+            _setw pane-border-style          'fg=#2a2a2a,bg=#1f252d'
+            _setw pane-active-border-style   'fg=#88c0d0,bg=#1f252d'
+            _set  message-style              'fg=#c6cacf,bg=#262626'
             ;;
 
-        # --- EVERFOREST (Verde muschio) ---
+        # --- EVERFOREST (Accent: #a7c080) ---
         everforest|forest)
-            _set  status-style               'bg=#2d353b,fg=#a7c080'
-            _set  window-status-style        'bg=#2d353b,fg=#475258'
-            _set  window-status-current-style 'bg=#2d353b,fg=#83c092,bold'
-            _setw window-style               'bg=#2d353b,fg=#7a9a80'
-            _setw window-active-style        'bg=#2d353b,fg=#d3c6aa'
-            _setw pane-border-style          'fg=#3d4a40,bg=#2d353b'
-            _setw pane-active-border-style   'fg=#a7c080,bg=#2d353b'
+            # Background: #232a2e
+            _set  status-style               'fg=#b8bcc0,bg=#232a2e'
+            _set  window-status-style        'fg=#8a8f94,bg=#232a2e'
+            _set  window-status-current-style 'fg=#c6cacf,bg=#232a2e,bold'
+            _setw window-style               'fg=#8a8f94,bg=#232a2e'
+            _setw window-active-style        'fg=#b8bcc0,bg=#232a2e'
+            _setw pane-border-style          'fg=#2a2a2a,bg=#232a2e'
+            _setw pane-active-border-style   'fg=#a7c080,bg=#232a2e'
+            _set  message-style              'fg=#c6cacf,bg=#282828'
             ;;
 
-        # --- GRUVBOX (Retrò caldo) ---
+        # --- GRUVBOX (Accent: #fabd2f) ---
         gruvbox)
-            _set  status-style               'bg=#282828,fg=#b8bb26'
-            _set  window-status-style        'bg=#282828,fg=#504945'
-            _set  window-status-current-style 'bg=#282828,fg=#fabd2f,bold'
-            _setw window-style               'bg=#282828,fg=#928374'
-            _setw window-active-style        'bg=#282828,fg=#ebdbb2'
-            _setw pane-border-style          'fg=#3c3836,bg=#282828'
-            _setw pane-active-border-style   'fg=#fabd2f,bg=#282828'
+            # Background: #202020
+            _set  status-style               'fg=#b8bcc0,bg=#202020'
+            _set  window-status-style        'fg=#8a8f94,bg=#202020'
+            _set  window-status-current-style 'fg=#c6cacf,bg=#202020,bold'
+            _setw window-style               'fg=#8a8f94,bg=#202020'
+            _setw window-active-style        'fg=#b8bcc0,bg=#202020'
+            _setw pane-border-style          'fg=#2a2a2a,bg=#202020'
+            _setw pane-active-border-style   'fg=#fabd2f,bg=#202020'
+            _set  message-style              'fg=#c6cacf,bg=#242424'
             ;;
 
-        # --- CREAM (Neutro caldo, bianco sporco) ---
-        cream|warm|neutral)
-            _set  status-style               'bg=#d8d0b8,fg=#000000'
-            _set  window-status-style        'bg=#d8d0b8,fg=#4a4030'
-            _set  window-status-current-style 'bg=#d8d0b8,fg=#000000,bold'
-            _setw window-style               'bg=#d8d0b8,fg=#302820'
-            _setw window-active-style        'bg=#d8d0b8,fg=#000000'
-            _setw pane-border-style          'fg=#b8b098,bg=#d8d0b8'
-            _setw pane-active-border-style   'fg=#000000,bg=#d8d0b8'
+        # ============================================
+        # LIGHT THEMES
+        # ============================================
+
+        # --- PAPER (DEFAULT LIGHT - Neutral Accent) ---
+        paper|light)
+            # Background: #f3f3f1
+            _set  status-style               'fg=#3f4347,bg=#f3f3f1'
+            _set  window-status-style        'fg=#7a8086,bg=#f3f3f1'
+            _set  window-status-current-style 'fg=#2f3336,bg=#f3f3f1,bold'
+            _setw window-style               'fg=#7a8086,bg=#f3f3f1'
+            _setw window-active-style        'fg=#3f4347,bg=#f3f3f1'
+            _setw pane-border-style          'fg=#d2d6da,bg=#f3f3f1'
+            _setw pane-active-border-style   'fg=#8a9096,bg=#f3f3f1'
+            _set  message-style              'fg=#2f3336,bg=#e6e6e2'
             ;;
 
-        # --- GRAY (Neutro, scale di grigio - dark) ---
-        gray|grey|mono)
-            _set  status-style               'bg=#2d3036,fg=#b0b8c0'
-            _set  window-status-style        'bg=#2d3036,fg=#5a626c'
-            _set  window-status-current-style 'bg=#2d3036,fg=#d0d8e0,bold'
-            _setw window-style               'bg=#2d3036,fg=#8a929c'
-            _setw window-active-style        'bg=#2d3036,fg=#e8ecf0'
-            _setw pane-border-style          'fg=#3d4148,bg=#2d3036'
-            _setw pane-active-border-style   'fg=#b0b8c0,bg=#2d3036'
+        # --- LCOBALT (Accent: #5f87a8) ---
+        lcobalt)
+            # Background: #eef3f7
+            _set  status-style               'fg=#3f4347,bg=#eef3f7'
+            _set  window-status-style        'fg=#7a8086,bg=#eef3f7'
+            _set  window-status-current-style 'fg=#2f3336,bg=#eef3f7,bold'
+            _setw window-style               'fg=#7a8086,bg=#eef3f7'
+            _setw window-active-style        'fg=#3f4347,bg=#eef3f7'
+            _setw pane-border-style          'fg=#d2d6da,bg=#eef3f7'
+            _setw pane-active-border-style   'fg=#5f87a8,bg=#eef3f7'
+            _set  message-style              'fg=#2f3336,bg=#e2e8ec'
             ;;
 
-        # --- LIGHT GRAY (Neutro chiaro - light background) ---
-        lightgray|lightgrey|lightmono)
-            _set  status-style               'bg=#e8ecf0,fg=#3d4148'
-            _set  window-status-style        'bg=#e8ecf0,fg=#8a929c'
-            _set  window-status-current-style 'bg=#e8ecf0,fg=#2d3036,bold'
-            _setw window-style               'bg=#e8ecf0,fg=#5a626c'
-            _setw window-active-style        'bg=#e8ecf0,fg=#2d3036'
-            _setw pane-border-style          'fg=#c8cdd2,bg=#e8ecf0'
-            _setw pane-active-border-style   'fg=#5a626c,bg=#e8ecf0'
-            ;;
-
-        # --- ADAPTIVE (Works on light AND dark backgrounds) ---
-
-        # --- LBLUE (Bright Blue for Light Backgrounds) ---
-        lblue)
-            _set  status-style               'bg=#e6f2ff,fg=#1e5aa8'
-            _set  window-status-style        'bg=#e6f2ff,fg=#5a8ac8'
-            _set  window-status-current-style 'bg=#e6f2ff,fg=#1e5aa8,bold'
-            _setw window-style               'bg=#e6f2ff,fg=#7a9ac8'
-            _setw window-active-style        'bg=#e6f2ff,fg=#0d3a6e'
-            _setw pane-border-style          'fg=#c8d8f0,bg=#e6f2ff'
-            _setw pane-active-border-style   'fg=#1e5aa8,bg=#e6f2ff'
-            ;;
-
-        # --- LGREEN (Bright Green for Light Backgrounds) ---
+        # --- LGREEN (Accent: #98c379) ---
         lgreen)
-            _set  status-style               'bg=#e6f8e6,fg=#2d6e2d'
-            _set  window-status-style        'bg=#e6f8e6,fg=#5a9a5a'
-            _set  window-status-current-style 'bg=#e6f8e6,fg=#2d6e2d,bold'
-            _setw window-style               'bg=#e6f8e6,fg=#7aaa7a'
-            _setw window-active-style        'bg=#e6f8e6,fg=#1a4a1a'
-            _setw pane-border-style          'fg=#c8e8c8,bg=#e6f8e6'
-            _setw pane-active-border-style   'fg=#2d6e2d,bg=#e6f8e6'
+            # Background: #eef7ea
+            _set  status-style               'fg=#3f4347,bg=#eef7ea'
+            _set  window-status-style        'fg=#7a8086,bg=#eef7ea'
+            _set  window-status-current-style 'fg=#2f3336,bg=#eef7ea,bold'
+            _setw window-style               'fg=#7a8086,bg=#eef7ea'
+            _setw window-active-style        'fg=#3f4347,bg=#eef7ea'
+            _setw pane-border-style          'fg=#d2d6da,bg=#eef7ea'
+            _setw pane-active-border-style   'fg=#98c379,bg=#eef7ea'
+            _set  message-style              'fg=#2f3336,bg=#e4ece6'
             ;;
 
-        # --- LORANGE (Bright Orange for Light Backgrounds) ---
+        # --- LBLUE (Accent: #7aa2d2) ---
+        lblue)
+            # Background: #edf4fb
+            _set  status-style               'fg=#3f4347,bg=#edf4fb'
+            _set  window-status-style        'fg=#7a8086,bg=#edf4fb'
+            _set  window-status-current-style 'fg=#2f3336,bg=#edf4fb,bold'
+            _setw window-style               'fg=#7a8086,bg=#edf4fb'
+            _setw window-active-style        'fg=#3f4347,bg=#edf4fb'
+            _setw pane-border-style          'fg=#d2d6da,bg=#edf4fb'
+            _setw pane-active-border-style   'fg=#7aa2d2,bg=#edf4fb'
+            _set  message-style              'fg=#2f3336,bg=#e4ebf2'
+            ;;
+
+        # --- LPURPLE (Accent: #b294d2) ---
+        lpurple)
+            # Background: #f5eff8
+            _set  status-style               'fg=#3f4347,bg=#f5eff8'
+            _set  window-status-style        'fg=#7a8086,bg=#f5eff8'
+            _set  window-status-current-style 'fg=#2f3336,bg=#f5eff8,bold'
+            _setw window-style               'fg=#7a8086,bg=#f5eff8'
+            _setw window-active-style        'fg=#3f4347,bg=#f5eff8'
+            _setw pane-border-style          'fg=#d2d6da,bg=#f5eff8'
+            _setw pane-active-border-style   'fg=#b294d2,bg=#f5eff8'
+            _set  message-style              'fg=#2f3336,bg=#ece5f0'
+            ;;
+
+        # --- LORANGE (Accent: #d7a65f) ---
         lorange)
-            _set  status-style               'bg=#fff4e6,fg=#c66a00'
-            _set  window-status-style        'bg=#fff4e6,fg=#d89850'
-            _set  window-status-current-style 'bg=#fff4e6,fg=#c66a00,bold'
-            _setw window-style               'bg=#fff4e6,fg=#e0b880'
-            _setw window-active-style        'bg=#fff4e6,fg=#8a4500'
-            _setw pane-border-style          'fg=#f0e0d0,bg=#fff4e6'
-            _setw pane-active-border-style   'fg=#c66a00,bg=#fff4e6'
+            # Background: #fbf2e7
+            _set  status-style               'fg=#3f4347,bg=#fbf2e7'
+            _set  window-status-style        'fg=#7a8086,bg=#fbf2e7'
+            _set  window-status-current-style 'fg=#2f3336,bg=#fbf2e7,bold'
+            _setw window-style               'fg=#7a8086,bg=#fbf2e7'
+            _setw window-active-style        'fg=#3f4347,bg=#fbf2e7'
+            _setw pane-border-style          'fg=#d2d6da,bg=#fbf2e7'
+            _setw pane-active-border-style   'fg=#d7a65f,bg=#fbf2e7'
+            _set  message-style              'fg=#2f3336,bg=#f2e8dc'
             ;;
 
-        # --- LRED (Bright Red for Light Backgrounds) ---
+        # --- LRED (Accent: #d38686) ---
         lred)
-            _set  status-style               'bg=#ffe6e6,fg=#c62020'
-            _set  window-status-style        'bg=#ffe6e6,fg=#d86060'
-            _set  window-status-current-style 'bg=#ffe6e6,fg=#c62020,bold'
-            _setw window-style               'bg=#ffe6e6,fg=#e09090'
-            _setw window-active-style        'bg=#ffe6e6,fg=#8a1010'
-            _setw pane-border-style          'fg=#f0d8d8,bg=#ffe6e6'
-            _setw pane-active-border-style   'fg=#c62020,bg=#ffe6e6'
+            # Background: #fbebeb
+            _set  status-style               'fg=#3f4347,bg=#fbebeb'
+            _set  window-status-style        'fg=#7a8086,bg=#fbebeb'
+            _set  window-status-current-style 'fg=#2f3336,bg=#fbebeb,bold'
+            _setw window-style               'fg=#7a8086,bg=#fbebeb'
+            _setw window-active-style        'fg=#3f4347,bg=#fbebeb'
+            _setw pane-border-style          'fg=#d2d6da,bg=#fbebeb'
+            _setw pane-active-border-style   'fg=#d38686,bg=#fbebeb'
+            _set  message-style              'fg=#2f3336,bg=#f2dddd'
             ;;
 
-        adaptive|auto)
-            _set  status-style               'bg=default,fg=brightblack'
-            _set  window-status-style        'bg=default,fg=brightblack'
-            _set  window-status-current-style 'bg=default,fg=cyan,bold'
-            _setw window-style               'bg=default,fg=default'
-            _setw window-active-style        'bg=default,fg=default'
-            _setw pane-border-style          'fg=brightblack,bg=default'
-            _setw pane-active-border-style   'fg=cyan,bg=default'
+        # --- LNORD (Accent: #88c0d0) ---
+        lnord)
+            # Background: #eef3f5
+            _set  status-style               'fg=#3f4347,bg=#eef3f5'
+            _set  window-status-style        'fg=#7a8086,bg=#eef3f5'
+            _set  window-status-current-style 'fg=#2f3336,bg=#eef3f5,bold'
+            _setw window-style               'fg=#7a8086,bg=#eef3f5'
+            _setw window-active-style        'fg=#3f4347,bg=#eef3f5'
+            _setw pane-border-style          'fg=#d2d6da,bg=#eef3f5'
+            _setw pane-active-border-style   'fg=#88c0d0,bg=#eef3f5'
+            _set  message-style              'fg=#2f3336,bg=#e4eaec'
+            ;;
+
+        # --- LEVERFOREST (Accent: #a7c080) ---
+        leverforest)
+            # Background: #f1f4ed
+            _set  status-style               'fg=#3f4347,bg=#f1f4ed'
+            _set  window-status-style        'fg=#7a8086,bg=#f1f4ed'
+            _set  window-status-current-style 'fg=#2f3336,bg=#f1f4ed,bold'
+            _setw window-style               'fg=#7a8086,bg=#f1f4ed'
+            _setw window-active-style        'fg=#3f4347,bg=#f1f4ed'
+            _setw pane-border-style          'fg=#d2d6da,bg=#f1f4ed'
+            _setw pane-active-border-style   'fg=#a7c080,bg=#f1f4ed'
+            _set  message-style              'fg=#2f3336,bg=#e7ece2'
+            ;;
+
+        # --- LGRUVBOX (Accent: #fabd2f) ---
+        lgruvbox)
+            # Background: #f6f1e4
+            _set  status-style               'fg=#3f4347,bg=#f6f1e4'
+            _set  window-status-style        'fg=#7a8086,bg=#f6f1e4'
+            _set  window-status-current-style 'fg=#2f3336,bg=#f6f1e4,bold'
+            _setw window-style               'fg=#7a8086,bg=#f6f1e4'
+            _setw window-active-style        'fg=#3f4347,bg=#f6f1e4'
+            _setw pane-border-style          'fg=#d2d6da,bg=#f6f1e4'
+            _setw pane-active-border-style   'fg=#fabd2f,bg=#f6f1e4'
+            _set  message-style              'fg=#2f3336,bg=#eee6d3'
             ;;
 
         *)
             echo "Unknown theme: $theme"
-            echo "Available: cobalt, green, blue, lblue, lgreen, lorange, lred, purple, orange, red, nord, everforest, gruvbox, cream, gray, lightgray, adaptive"
+            echo ""
+            echo "Dark themes:"
+            echo "  graphite (default), cobalt, green, blue, purple"
+            echo "  orange, red, nord, everforest, gruvbox"
+            echo ""
+            echo "Light themes:"
+            echo "  paper (default light), lcobalt, lgreen, lblue"
+            echo "  lpurple, lorange, lred, lnord, leverforest, lgruvbox"
             return 1
             ;;
     esac
@@ -223,7 +318,8 @@ apply_theme() {
     echo "Applied '$theme' theme to session '$session'"
 }
 
-# Run standalone: bash themes.sh <theme> <session>
+# Run standalone: bash themes.sh <theme> [session]
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    apply_theme "$@"
+    SESSION="${2:-$(tmux display-message -p '#S' 2>/dev/null)}"
+    apply_theme "$1" "$SESSION"
 fi

@@ -20,7 +20,11 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
-# Syntax highlighting — adaptive for light/dark backgrounds (ANSI colors)
+# ============================================
+# SYNTAX HIGHLIGHTING — Adaptive for light/dark backgrounds
+# ============================================
+# Uses ANSI colors; fg=8 (bright black) is adaptive gray
+
 ZSH_HIGHLIGHT_STYLES[command]='bold'
 ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=red,bold'
 ZSH_HIGHLIGHT_STYLES[builtin]='bold'
@@ -31,32 +35,40 @@ ZSH_HIGHLIGHT_STYLES[precommand]='bold,underline'
 ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=yellow'
 ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=yellow'
 ZSH_HIGHLIGHT_STYLES[redirection]='bold'
-ZSH_HIGHLIGHT_STYLES[comment]='italic,fg=black'
+ZSH_HIGHLIGHT_STYLES[comment]='fg=8'
 
-# Autosuggestions — adapts to terminal theme (black = dark gray on light, light gray on dark)
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=black'
+# ============================================
+# AUTOSUGGESTIONS — Adaptive
+# ============================================
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
 
-# History substring search
+# ============================================
+# HISTORY SUBSTRING SEARCH
+# ============================================
 HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND='bold'
 HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND='fg=red'
 
-# FZF integration (se disponibile)
+# ============================================
+# FZF integration
+# ============================================
 if [ -f /usr/share/fzf/shell/key-bindings.zsh ]; then
     source /usr/share/fzf/shell/key-bindings.zsh
     export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
     export FZF_CTRL_T_OPTS="--preview 'bat --color=always --line-range :500 {} 2>/dev/null || cat {}'"
 fi
 
-# Alias moderni (se i tool sono disponibili)
+# ============================================
+# ALIASES — Modern tools
+# ============================================
 if command -v eza &> /dev/null; then
     alias ls='eza --icons --group-directories-first'
     alias ll='eza -l --icons --group-directories-first'
     alias la='eza -la --icons --group-directories-first'
     alias lt='eza --tree --icons --group-directories-first --git-ignore --ignore-glob="venv|.venv|env|.env|node_modules|.git"'
-    alias lta='eza --tree --icons --group-directories-first'  # tree ALL (senza esclusioni)
-    alias lsga='eza --tree --icons --group-directories-first --git'  # tree ALL con git status
-    alias lsg3='eza --tree --level 3 --icons --group-directories-first --git'  # tree 3 livelli con git status
-    alias lsgm='git status -s'  # solo file modificati (git)
+    alias lta='eza --tree --icons --group-directories-first'
+    alias lsga='eza --tree --icons --group-directories-first --git'
+    alias lsg3='eza --tree --level 3 --icons --group-directories-first --git'
+    alias lsgm='git status -s'
 fi
 
 if command -v bat &> /dev/null; then
@@ -71,97 +83,112 @@ if command -v fd &> /dev/null; then
     alias find='fd'
 fi
 
-if command -v zoxide &> /dev/null; then
-    alias cd='z'
-fi
-
-# Starship prompt
+# ============================================
+# STARSHIP PROMPT
+# ============================================
 if command -v starship &> /dev/null; then
     eval "$(starship init zsh)"
 fi
 
-# NVM (se installato)
+# ============================================
+# NVM & Bun
+# ============================================
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-
-# Bun completions (se installato)
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
-# Alias per gestire i dotfiles (Bare Git Repository)
+# ============================================
+# DOTFILES (Bare Git Repository)
+# ============================================
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
-# Disable non-essential traffic and telemetry
+# ============================================
+# TELEMETRY DISABLE
+# ============================================
 export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
 export DISABLE_TELEMETRY=1
 export DISABLE_ERROR_REPORTING=1
-# Qwen Account Rotation CLI
-# Now installed via pip as credential-rotation package
-# The account-qwen command is available through the package entry point
 
+# ============================================
+# PATH EXTRAS
+# ============================================
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
-
-# opencode
 export PATH=/home/dawid/.opencode/bin:$PATH
 export PATH="$HOME/.local/bin:$PATH"
 
-# Tmux session helper
-alias tmux-session='~/.local/bin/tmux-session'
-alias ts='tmux-session'
+# ============================================
+# TMUX ALIASES
+# ============================================
+alias ta='tmux attach -t'
+alias tl='tmux ls'
+alias tn='tmux new -s'
+alias tk='tmux kill-session -t'
+alias tw='tmux new-window'
+alias tsp='tmux split-window -v'
+alias tsh='tmux split-window -h'
+alias ts='~/.local/bin/tmux-session 2>/dev/null || tmux-session'
 
-# Ghostty theme switcher
-alias ghostty-themes='~/.local/bin/ghostty-themes'
-alias gt='ghostty-themes'
-
-# Tmux aliases
-alias ta='tmux attach -t'           # ta mysession
-alias tl='tmux ls'                  # lista sessioni
-alias tn='tmux new -s'              # tn mysession
-alias tk='tmux kill-session -t'     # tk mysession
-alias tw='tmux new-window'          # nuova finestra
-alias tsp='tmux split-window -v'    # split verticale
-alias tsh='tmux split-window -h'    # split orizzontale
-
-# Help alias tmux
-th() {
-    echo ""
-    echo "  TMUX ALIASES"
-    echo "  ────────────────────────────────────"
-    echo "  ta <nome>    attach a sessione"
-    echo "  tl           lista sessioni"
-    echo "  tn <nome>    nuova sessione con nome"
-    echo "  tk <nome>    kill sessione"
-    echo "  tw           nuova finestra"
-    echo "  tsp          split verticale (↕)"
-    echo "  tsh          split orizzontale (↔)"
-    echo "  ttheme <n>   applica tema alla sessione"
-    echo ""
-    echo "  TEMI DISPONIBILI"
-    echo "  ────────────────────────────────────"
-    echo "  cobalt  green  blue  purple  orange"
-    echo "  red     nord   everforest   gruvbox"
-    echo "  cream   gray   lightgray    adaptive"
-    echo ""
-    echo "  TEMI AUTO (dal nome sessione)"
-    echo "  ────────────────────────────────────"
-    echo "  *dev* *code*     → green"
-    echo "  *research* *doc* → blue"
-    echo "  *debug* *test*   → orange"
-    echo "  *prod* *urgent*  → red"
-    echo ""
-}
-
-# Applica tema alla sessione tmux corrente: ttheme green
+# Apply theme to current tmux session
 ttheme() {
     local session
     session=$(tmux display-message -p '#S' 2>/dev/null)
     if [ -z "$session" ]; then
-        echo "Nessuna sessione tmux attiva"
+        echo "No active tmux session"
+        return 1
+    fi
+    if [ -z "$1" ]; then
+        echo "Usage: ttheme <theme>"
+        echo "Themes: graphite, paper, cobalt, green, blue, purple, orange, red"
+        echo "        nord, everforest, gruvbox (dark)"
+        echo "        lcobalt, lgreen, lblue, lpurple, lorange, lred, lnord, leverforest, lgruvbox (light)"
         return 1
     fi
     bash -c "source ~/.tmux/themes.sh && apply_theme '$1' '$session'"
 }
 
-# Zoxide initialization (must be last)
+# Tmux help
+th() {
+    echo ""
+    echo "  TMUX ALIASES"
+    echo "  ────────────────────────────────────"
+    echo "  ta <name>    attach to session"
+    echo "  tl           list sessions"
+    echo "  tn <name>    new session"
+    echo "  tk <name>    kill session"
+    echo "  tw           new window"
+    echo "  tsp          split vertical (↕)"
+    echo "  tsh          split horizontal (↔)"
+    echo "  ttheme <n>   apply theme to session"
+    echo ""
+    echo "  DARK THEMES (accent colors)"
+    echo "  ────────────────────────────────────"
+    echo "  graphite (neutral)  cobalt (#5f87a8)"
+    echo "  green (#98c379)     blue (#7aa2d2)"
+    echo "  purple (#b294d2)    orange (#d7a65f)"
+    echo "  red (#d38686)       nord (#88c0d0)"
+    echo "  everforest (#a7c080) gruvbox (#fabd2f)"
+    echo ""
+    echo "  LIGHT THEMES (same accents)"
+    echo "  ────────────────────────────────────"
+    echo "  paper (neutral)     lcobalt"
+    echo "  lgreen              lblue"
+    echo "  lpurple             lorange"
+    echo "  lred                lnord"
+    echo "  leverforest         lgruvbox"
+    echo ""
+    echo "  AUTO-THEME (from session name)"
+    echo "  ────────────────────────────────────"
+    echo "  *dev* *code* *claude* *ai*  → green"
+    echo "  *research* *doc* *read*     → blue"
+    echo "  *test* *debug*              → orange"
+    echo "  *prod* *urgent* *live*      → red"
+    echo "  *creative* *write* *note*   → purple"
+    echo ""
+}
+
+# ============================================
+# ZOXIDE (must be last)
+# ============================================
 if command -v zoxide &> /dev/null; then
-    eval "$(zoxide init zsh)"
+    eval "$(zoxide init zsh --cmd cd)"
 fi

@@ -1,7 +1,7 @@
 # Starship configuration
-# Style: neutral, professional, theme-adaptive
-# Compatibile con tutti i temi tmux (cobalt, green, blue, purple, orange, red, nord, everforest, gruvbox)
-# Non richiede Nerd Font
+# Style: neutral, professional, terminal-adaptive
+# Uses ANSI colors that work on both light and dark backgrounds
+# No Nerd Font required, no emojis
 
 command_timeout = 500
 
@@ -10,11 +10,11 @@ right_format = """$python"""
 
 [character]
 success_symbol = "[\\$](bold)"
-error_symbol = "[\\$](bold #cc7832)"
+error_symbol = "[\\$](bold red)"
 
 [username]
 style_user = "bold"
-style_root = "bold #cc7832"
+style_root = "bold red"
 format = "[$user@]($style)"
 disabled = false
 show_always = false
@@ -30,16 +30,16 @@ truncation_length = 3
 truncate_to_repo = true
 format = "[$read_only]($read_only_style)[$path]($style)"
 style = "bold"
-read_only = " 󰌾"
+read_only = ""
 home_symbol = "~"
 
 [git_branch]
 format = "[$branch ]($style)"
-style = "dimmed"
+style = ""
 
 [git_status]
 format = '([\($all_status$ahead_behind\) ]($style))'
-style = "dimmed"
+style = ""
 conflicted = "!"
 ahead = "↑"
 behind = "↓"
@@ -53,7 +53,7 @@ deleted = "-"
 
 [git_state]
 format = '\([$state( $progress_current/$progress_total)]($style)\) '
-style = "dimmed"
+style = ""
 rebase = "rebase"
 merge = "merge"
 revert = "revert"
@@ -65,7 +65,7 @@ am_or_rebase = "am/rebase"
 [python]
 symbol = ""
 format = "[(($virtualenv))]($style)"
-style = "dimmed"
+style = ""
 detect_extensions = ["py"]
 detect_files = [".python-version", "Pipfile", "requirements.txt", "pyproject.toml", "setup.py"]
 detect_folders = []
@@ -74,4 +74,7 @@ detect_folders = []
 disabled = true
 
 [time]
+disabled = true
+
+[line_break]
 disabled = true

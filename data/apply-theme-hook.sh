@@ -17,7 +17,7 @@ fi
 SESSION_LOWER=$(echo "$SESSION" | tr '[:upper:]' '[:lower:]')
 
 # Determine theme based on session name
-THEME="cobalt"  # default
+THEME="graphite"  # default dark
 
 case "$SESSION_LOWER" in
     # Green themes - Development/Coding
@@ -58,6 +58,57 @@ case "$SESSION_LOWER" in
     # Gruvbox theme
     *gruv*|*retro*|*warm*)
         THEME="gruvbox"
+        ;;
+
+    # Cobalt theme
+    *cobalt*)
+        THEME="cobalt"
+        ;;
+
+    # ============================================
+    # LIGHT THEME TRIGGERS
+    # ============================================
+
+    # Paper (default light)
+    *paper*|*light*)
+        THEME="paper"
+        ;;
+
+    # Light variants
+    *lcobalt*)
+        THEME="lcobalt"
+        ;;
+
+    *lgreen*)
+        THEME="lgreen"
+        ;;
+
+    *lblue*)
+        THEME="lblue"
+        ;;
+
+    *lpurple*)
+        THEME="lpurple"
+        ;;
+
+    *lorange*)
+        THEME="lorange"
+        ;;
+
+    *lred*)
+        THEME="lred"
+        ;;
+
+    *lnord*)
+        THEME="lnord"
+        ;;
+
+    *leverforest*|*lforest*)
+        THEME="leverforest"
+        ;;
+
+    *lgruv*)
+        THEME="lgruvbox"
         ;;
 esac
 

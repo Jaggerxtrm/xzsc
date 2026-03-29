@@ -22,6 +22,13 @@ async function installTmuxThemes(configManager, logger, options = {}) {
   await copyFromData(options.scriptDir, 'themes.sh', themePath, logger, { executable: true, backup: true });
   await copyFromData(options.scriptDir, 'apply-theme-hook.sh', path.join(tmuxDir, 'apply-theme-hook.sh'), logger, { executable: true, backup: true });
 
+  const scriptsDir = path.join(tmuxDir, 'scripts');
+  await fs.ensureDir(scriptsDir);
+  const gitPaneStatus = path.join(options.scriptDir, 'data', 'git-pane-status.sh');
+  if (await fs.pathExists(gitPaneStatus)) {
+    await copyFromData(options.scriptDir, 'git-pane-status.sh', path.join(scriptsDir, 'git-pane-status.sh'), logger, { executable: true, backup: true });
+  }
+
   const themesDoc = path.join(options.scriptDir, 'data', 'THEMES.md');
   if (await fs.pathExists(themesDoc)) {
     await copyFromData(options.scriptDir, 'THEMES.md', path.join(tmuxDir, 'THEMES.md'), logger, { backup: true });

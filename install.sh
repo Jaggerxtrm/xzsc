@@ -1364,12 +1364,19 @@ install_tmux() {
         fi
     fi
 
-    # Copy themes
+    # Copy themes + status scripts
     cp "$SCRIPT_DIR/data/themes.sh" "$HOME/.tmux/themes.sh"
     chmod +x "$HOME/.tmux/themes.sh"
     cp "$SCRIPT_DIR/data/apply-theme-hook.sh" "$HOME/.tmux/apply-theme-hook.sh"
     chmod +x "$HOME/.tmux/apply-theme-hook.sh"
-    echo "✓ Tmux themes installed (cobalt, green, blue, purple, orange, red, nord, everforest, gruvbox, cream)"
+
+    mkdir -p "$HOME/.tmux/scripts"
+    if [ -f "$SCRIPT_DIR/data/git-pane-status.sh" ]; then
+        cp "$SCRIPT_DIR/data/git-pane-status.sh" "$HOME/.tmux/scripts/git-pane-status.sh"
+        chmod +x "$HOME/.tmux/scripts/git-pane-status.sh"
+    fi
+
+    echo "✓ Tmux themes installed (graphite, paper, cobalt, green, blue, purple, orange, red, nord, everforest, gruvbox + light variants)"
 
     # Install TPM plugins by cloning directly (no tmux server required)
     echo "Installing TPM plugins..."
