@@ -1,6 +1,6 @@
 {
   "name": "@jaggerxtrm/xzsc",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "Modern Zsh + Starship + Nerd Fonts setup via npm",
   "main": "src/index.js",
   "bin": {
