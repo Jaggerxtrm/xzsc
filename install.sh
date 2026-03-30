@@ -263,6 +263,23 @@ install_nerd_fonts() {
         echo "✓ Cousine Nerd Font installed"
     fi
 
+    # SF Mono Nerd Font (bundled, not in official nerd-fonts due to Apple licensing)
+    if fc-list | grep -qi "SFMono Nerd Font"; then
+        echo "✓ SF Mono Nerd Font already installed"
+    else
+        if [ -f "$SCRIPT_DIR/data/SF-Mono-Nerd-Font-18.0d1e1.0.zip" ]; then
+            echo "Installing SF Mono Nerd Font from bundled archive..."
+            cd /tmp
+            unzip -q -o "$SCRIPT_DIR/data/SF-Mono-Nerd-Font-18.0d1e1.0.zip" -d sfmono_extract
+            mkdir -p "$FONT_DIR/SFMonoNerdFont"
+            find sfmono_extract -name "*.otf" -exec mv {} "$FONT_DIR/SFMonoNerdFont/" \;
+            rm -rf sfmono_extract
+            echo "✓ SF Mono Nerd Font installed"
+        else
+            echo "⚠ SF Mono Nerd Font archive not found in data/"
+        fi
+    fi
+
     # Refresh cache
     fc-cache -fv "$FONT_DIR" > /dev/null 2>&1
     cd "$CURRENT_DIR"
