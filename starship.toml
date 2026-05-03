@@ -1,74 +1,42 @@
-# Starship configuration
-# Style: neutral, professional, terminal-adaptive
-# Uses ANSI colors that work on both light and dark backgrounds
-# No Nerd Font required, no emojis
-
 command_timeout = 500
 
-format = """$username$hostname $directory $git_branch$git_status$git_state$character"""
-right_format = """$python"""
+format = "$username$hostname$directory${custom.git_prompt} $character"
+right_format = ""
 
 [character]
-success_symbol = "[\\$](bold)"
-error_symbol = "[\\$](bold red)"
+success_symbol = "[\\$](bold yellow)"
+error_symbol = "[\\$](bold yellow)"
 
 [username]
-style_user = "bold"
-style_root = "bold red"
+style_user = "bold yellow"
+style_root = "bold yellow"
 format = "[$user@]($style)"
 disabled = false
-show_always = false
+show_always = true
 
 [hostname]
 ssh_only = false
-format = "[$hostname]($style)"
-style = ""
+format = "[$hostname:]($style)"
+style = "bold yellow"
 disabled = false
 
 [directory]
 truncation_length = 3
-truncate_to_repo = true
-format = "[$read_only]($read_only_style)[$path]($style)"
-style = "bold"
-read_only = ""
+truncate_to_repo = false
 home_symbol = "~"
+read_only = ""
+format = "[$path]($style)"
+style = "bold yellow"
 
-[git_branch]
-format = "[$branch ]($style)"
-style = ""
-
-[git_status]
-format = '([\($all_status$ahead_behind\) ]($style))'
-style = ""
-conflicted = "!"
-ahead = "↑"
-behind = "↓"
-diverged = "↕"
-untracked = ""
-stashed = ""
-modified = "*"
-staged = "+"
-renamed = ""
-deleted = "-"
-
-[git_state]
-format = '\([$state( $progress_current/$progress_total)]($style)\) '
-style = ""
-rebase = "rebase"
-merge = "merge"
-revert = "revert"
-cherry_pick = "cherry-pick"
-bisect = "bisect"
-am = "am"
-am_or_rebase = "am/rebase"
+[custom.git_prompt]
+when = "git rev-parse --is-inside-work-tree >/dev/null 2>&1"
+shell = ["bash", "--noprofile", "--norc"]
+command = "branch=$(git symbolic-ref --quiet --short HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null) || exit 0; if [ -d .git/rebase-merge ]; then cur=$(cat .git/rebase-merge/msgnum 2>/dev/null); total=$(cat .git/rebase-merge/end 2>/dev/null); echo \"(${branch} rebase ${cur}/${total})\"; exit 0; fi; if [ -d .git/rebase-apply ]; then cur=$(cat .git/rebase-apply/next 2>/dev/null); total=$(cat .git/rebase-apply/last 2>/dev/null); echo \"(${branch} rebase ${cur}/${total})\"; exit 0; fi; mark=; git diff --quiet --ignore-submodules -- || mark='*'; git diff --cached --quiet --ignore-submodules -- || mark='*'; upstream=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null || true); aheadBehind=; if [ -n \"$upstream\" ]; then set -- $(git rev-list --left-right --count \"$upstream\"...HEAD 2>/dev/null); behind=$1; ahead=$2; if [ \"$ahead\" -gt 0 ] && [ \"$behind\" -gt 0 ]; then aheadBehind=\"↕${ahead}/${behind}\"; elif [ \"$ahead\" -gt 0 ]; then aheadBehind=\"↑${ahead}\"; elif [ \"$behind\" -gt 0 ]; then aheadBehind=\"↓${behind}\"; fi; fi; echo \"(${branch}${mark}${aheadBehind})\""
+format = "$output"
+style = "bold yellow"
 
 [python]
-symbol = ""
-format = "[(($virtualenv))]($style)"
-style = ""
-detect_extensions = ["py"]
-detect_files = [".python-version", "Pipfile", "requirements.txt", "pyproject.toml", "setup.py"]
-detect_folders = []
+disabled = true
 
 [cmd_duration]
 disabled = true

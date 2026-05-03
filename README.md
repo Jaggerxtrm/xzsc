@@ -173,7 +173,7 @@ You can use aliases instead of component names:
 | Theme | Description | Auto-trigger |
 |--------|-------------|--------------|
 | `cobalt` | Blue/gray professional theme | - |
-| `green` | Green development theme | *dev*, *code* |
+| `green` | Code/development theme (`#282c33` bg) | *dev*, *code* |
 | `blue` | Blue research theme | *research*, *doc* |
 | `purple` | Purple calm theme | - |
 | `orange` | Orange warning theme | *debug*, *test* |
@@ -187,7 +187,7 @@ You can use aliases instead of component names:
 
 When you create tmux sessions, the theme is automatically applied based on the session name:
 
-- `dev*`, `code*` → green theme
+- `dev*`, `code*` → green/code theme (`#282c33`)
 - `research*`, `doc*` → blue theme
 - `debug*`, `test*` → orange theme
 - `prod*`, `urgent*` → red theme

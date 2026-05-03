@@ -38,7 +38,7 @@ Graphite-based, eye-friendly theme system with consistent visual hierarchy.
 |-------|--------|----------|
 | `graphite` | `#6f767d` (neutral) | **Default dark**, general use |
 | `cobalt` | `#5f87a8` | Alternative neutral |
-| `green` | `#98c379` | Coding, development, AI |
+| `green` | `#282c33` background, `#98c379` accent | Coding, development, AI |
 | `blue` | `#7aa2d2` | Research, learning |
 | `purple` | `#b294d2` | Creative, writing |
 | `orange` | `#d7a65f` | Testing, debugging |
@@ -90,7 +90,7 @@ lorange  lred      lnord     leverforest  lgruvbox
 
 | Session Keywords | Theme |
 |------------------|-------|
-| `code`, `dev`, `coding`, `claude`, `qwen`, `ai` | green |
+| `code`, `dev`, `coding`, `claude`, `qwen`, `ai` | green/code (`#282c33`) |
 | `research`, `learn`, `study`, `doc`, `read` | blue |
 | `creative`, `write`, `note`, `idea`, `brain` | purple |
 | `test`, `debug`, `spec`, `check` | orange |

@@ -60,16 +60,16 @@ apply_theme() {
             _set  message-style              'fg=#c6cacf,bg=#242424'
             ;;
 
-        # --- GREEN (Dev/Coding - Accent: #98c379) ---
-        green|dev|coding)
-            # Background: #182018
-            _set  status-style               'fg=#b8bcc0,bg=#182018'
-            _set  window-status-style        'fg=#8a8f94,bg=#182018'
-            _set  window-status-current-style 'fg=#c6cacf,bg=#182018,bold'
-            _setw window-style               'fg=#8a8f94,bg=#182018'
-            _setw window-active-style        'fg=#b8bcc0,bg=#182018'
-            _setw pane-border-style          'fg=#2a2a2a,bg=#182018'
-            _setw pane-active-border-style   'fg=#98c379,bg=#182018'
+        # --- GREEN / CODE (Dev/Coding - Background: #282c33) ---
+        green|dev|coding|code)
+            # Background: #282c33
+            _set  status-style               'fg=#b8bcc0,bg=#282c33'
+            _set  window-status-style        'fg=#8a8f94,bg=#282c33'
+            _set  window-status-current-style 'fg=#c6cacf,bg=#282c33,bold'
+            _setw window-style               'fg=#8a8f94,bg=#282c33'
+            _setw window-active-style        'fg=#b8bcc0,bg=#282c33'
+            _setw pane-border-style          'fg=#2a2a2a,bg=#282c33'
+            _setw pane-active-border-style   'fg=#98c379,bg=#282c33'
             _set  message-style              'fg=#c6cacf,bg=#222222'
             ;;
 

@@ -64,6 +64,8 @@
     "bin/",
     "src/",
     "dist/",
+    "starship.toml",
+    "starship-pure.toml",
     "data/",
     "scripts/",
     "README.md",
