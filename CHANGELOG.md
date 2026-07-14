@@ -1,3 +1,16 @@
+
+## [Unreleased]
+
+### Project maintenance
+
+- **Sync xtrm v0.9.0 assets** ([89e3303](https://github.com/Jaggerxtrm/xzsc/commit/89e33037cf1fbe776861892dd7a4bcda390ecd74))
+
+
+- **Add git-cliff config and changelog** ([9830505](https://github.com/Jaggerxtrm/xzsc/commit/9830505a5e5ef8021b4fce20ddc8192b82c15fc9))
+
+  Generic type-based parsers; repo-specific scopes to be tuned (see P0 bead).
+
+
 # Changelog
 
 ## v3.1.0 - 2026-03-09
