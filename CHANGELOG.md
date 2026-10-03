@@ -1,6 +1,13 @@
 
 # Changelog
 
+## v4.1.6 - 2026-10-03
+
+### Bug Fixes
+
+- **zsc update tmux**: the updater now also installs `git-pane-status.sh` (required by the new single-line status bar and pane-border labels) and `agent-hud.sh` (bound to `prefix A`) — previously only `copy-to-clipboard.sh` was copied.
+- **zsc update tmux-themes**: picks up `agent-hud.sh`; no longer copies `copy-to-clipboard.sh` twice.
+
 ## v4.1.5 - 2026-10-03
 
 ### Bug Fixes
