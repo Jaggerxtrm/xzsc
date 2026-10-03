@@ -22,7 +22,7 @@ const themesScriptDeployed = path.join(os.homedir(), '.tmux', 'themes.sh');
 // ---------------------------------------------------------------------------
 
 const COMPONENTS = ['eza', 'tmux', 'starship', 'fonts', 'zshrc', 'omz', 'plugins', 'statusline', 'tools'];
-const THEMES = ['cobalt', 'green', 'blue', 'purple', 'orange', 'red', 'nord', 'everforest', 'gruvbox', 'cream', 'gray', 'lightgray', 'adaptive', 'lblue', 'lgreen', 'lorange', 'lred'];
+const THEMES = ['black', 'transparent', 'graphite', 'retrogreen', 'cobalt', 'green', 'green2', 'blue', 'purple', 'orange', 'red', 'nord', 'everforest', 'gruvbox', 'paper', 'lcobalt', 'lgreen', 'lblue', 'lpurple', 'lorange', 'lred', 'lnord', 'leverforest', 'lgruvbox'];
 
 // ---------------------------------------------------------------------------
 // Usage text
@@ -45,8 +45,9 @@ Components (for update):
   eza  tmux  starship  fonts  zshrc  omz  plugins  statusline  tools
 
 Themes (for theme):
-  cobalt  green  blue  purple  orange  red  nord  everforest  gruvbox  cream
-  gray  lightgray  adaptive  lblue  lgreen  lorange  lred
+  black  transparent  graphite  retrogreen  cobalt  green  green2  blue
+  orange  red  nord  everforest  gruvbox  paper
+  lcobalt  lgreen  lblue  lpurple  lorange  lred  lnord  leverforest  lgruvbox
 
 Examples:
   zsc install
@@ -215,7 +216,8 @@ function cmdTheme(theme, sessionArg) {
     process.exit(1);
   }
 
-  const child = spawn('bash', [themesScript, theme, session], {
+  const barStyle = theme === 'retrogreen' ? 'theme' : 'inverse';
+  const child = spawn('bash', [themesScript, theme, session, barStyle], {
     stdio: 'inherit',
     env: process.env,
   });

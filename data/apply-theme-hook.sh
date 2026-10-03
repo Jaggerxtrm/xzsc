@@ -20,6 +20,24 @@ SESSION_LOWER=$(echo "$SESSION" | tr '[:upper:]' '[:lower:]')
 THEME="graphite"  # default dark
 
 case "$SESSION_LOWER" in
+    # True black / transparent / retro terminal themes
+    *black*|*trueblack*|*totalblack*)
+        THEME="black"
+        ;;
+
+    *transparent*|*trans*|*clear*)
+        THEME="transparent"
+        ;;
+
+    *retrogreen*|*phosphor*|*terminal-green*|*crt*)
+        THEME="retrogreen"
+        ;;
+
+    # Bright green theme
+    *green2*|*brightgreen*|*bright-green*)
+        THEME="green2"
+        ;;
+
     # Green themes - Development/Coding
     *code*|*dev*|*coding*|*claude*|*qwen*|*ai*)
         THEME="green"
@@ -113,4 +131,8 @@ case "$SESSION_LOWER" in
 esac
 
 # Apply the theme
-apply_theme "$THEME" "$SESSION"
+if [ "$THEME" = "retrogreen" ]; then
+    apply_theme "$THEME" "$SESSION" theme
+else
+    apply_theme "$THEME" "$SESSION"
+fi

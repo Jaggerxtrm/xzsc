@@ -10,6 +10,12 @@ async function validateStatusline(configManager) {
 }
 
 async function installStatusline(configManager, logger, options = {}) {
+  const enabled = configManager.get('components.statusline.enabled', true);
+  if (enabled === false) {
+    logger.info('Statusline component disabled in config — skipping.');
+    return { success: true, unchanged: true };
+  }
+
   const hookPath = configManager.get('components.statusline.hookPath', homePath('.claude', 'hooks', 'statusline-starship.sh'));
   const settingsPath = configManager.get('components.statusline.configPath', homePath('.claude', 'settings.json'));
 

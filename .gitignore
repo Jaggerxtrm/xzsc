@@ -7,3 +7,7 @@ node_modules/
 # Dolt database files (added by bd init)
 .dolt/
 *.db
+
+# runtime/backup artifacts
+.beads.gate.lock
+.mcp.json.bak-*

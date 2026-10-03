@@ -5,12 +5,20 @@ const fs = require('fs-extra');
 const { createLogger } = require('../utils/logger');
 
 const THEMES = [
-  'cobalt', 'green', 'blue', 'purple',
-  'orange', 'red', 'nord', 'everforest', 'gruvbox', 'cream',
-  'gray', 'lightgray', 'adaptive', 'lblue', 'lgreen', 'lorange', 'lred'
+  'black', 'transparent', 'graphite', 'retrogreen', 'cobalt', 'green', 'green2',
+  'blue', 'purple', 'orange', 'red', 'nord', 'everforest', 'gruvbox',
+  'paper', 'lcobalt', 'lgreen', 'lblue', 'lpurple', 'lorange', 'lred',
+  'lnord', 'leverforest', 'lgruvbox'
 ];
 
 const THEME_AUTO_RULES = {
+  '*black*': 'black',
+  '*trueblack*': 'black',
+  '*transparent*': 'transparent',
+  '*clear*': 'transparent',
+  '*green2*': 'green2',
+  '*brightgreen*': 'green2',
+  '*bright-green*': 'green2',
   '*dev*': 'green',
   '*code*': 'green',
   '*research*': 'blue',
@@ -65,7 +73,8 @@ async function theme(themeName, sessionName, options = {}) {
     }
 
     const { execute } = require('../utils/system');
-    const result = execute(`bash "${themeScript}" ${normalizedTheme} ${session}`);
+    const barStyle = normalizedTheme === 'retrogreen' ? 'theme' : 'inverse';
+    const result = execute(`bash "${themeScript}" ${normalizedTheme} ${session} ${barStyle}`);
     if (!result.success) {
       throw new Error(result.stderr || 'Failed to apply theme');
     }
@@ -113,7 +122,7 @@ async function resolveSession(sessionName, autoDetect) {
 }
 
 function getAutoTheme(sessionName) {
-  if (!sessionName) return 'cobalt';
+  if (!sessionName) return 'graphite';
 
   const lowerName = sessionName.toLowerCase();
   for (const [pattern, themeName] of Object.entries(THEME_AUTO_RULES)) {
@@ -129,23 +138,30 @@ function displayThemeList(logger) {
 
   const tableHeaders = ['Theme', 'Description', 'Auto-trigger'];
   const tableRows = [
+    ['black', 'True black terminal theme', '*black*, *trueblack*'],
+    ['transparent', 'Terminal-default transparent background', '*transparent*, *clear*'],
+    ['graphite', 'Default neutral dark theme', 'default'],
+    ['retrogreen', 'Old-school green terminal on graphite', 'N/A'],
     ['cobalt', 'Blue/gray professional theme', 'N/A'],
-    ['green', 'Green development theme', '*dev*, *code*'],
-    ['blue', 'Blue research theme', '*research*, *doc*'],
-    ['purple', 'Purple calm theme', 'N/A'],
+    ['green', 'Green/code development theme', '*dev*, *code*'],
+    ['green2', 'Green background with blue-style light foregrounds', '*green2*, *brightgreen*'],
+    ['blue', 'Visible blue research theme', '*research*, *doc*'],
+    ['purple', 'Visible purple writing theme', 'N/A'],
     ['orange', 'Orange warning theme', '*debug*, *test*'],
-    ['red', 'Red urgent theme', '*prod*, *urgent*'],
+    ['red', 'Visible red urgent theme', '*prod*, *urgent*'],
     ['nord', 'Nord dark theme', 'N/A'],
     ['everforest', 'Everforest green theme', 'N/A'],
     ['gruvbox', 'Gruvbox retro theme', 'N/A'],
-    ['cream', 'Cream light theme', 'N/A'],
-    ['gray', 'Neutral gray theme', 'N/A'],
-    ['lightgray', 'Light neutral gray theme', 'N/A'],
-    ['adaptive', 'Adaptive terminal-default theme', 'N/A'],
-    ['lblue', 'Bright blue theme for light backgrounds', 'N/A'],
-    ['lgreen', 'Bright green theme for light backgrounds', 'N/A'],
-    ['lorange', 'Bright orange theme for light backgrounds', 'N/A'],
-    ['lred', 'Bright red theme for light backgrounds', 'N/A']
+    ['paper', 'Default light neutral theme', 'N/A'],
+    ['lcobalt', 'Light cobalt theme', 'N/A'],
+    ['lgreen', 'Light green theme', 'N/A'],
+    ['lblue', 'Light blue theme', 'N/A'],
+    ['lpurple', 'Light purple theme', 'N/A'],
+    ['lorange', 'Light orange theme', 'N/A'],
+    ['lred', 'Light red theme', 'N/A'],
+    ['lnord', 'Light nord theme', 'N/A'],
+    ['leverforest', 'Light everforest theme', 'N/A'],
+    ['lgruvbox', 'Light gruvbox theme', 'N/A']
   ];
 
   logger.table(tableHeaders, tableRows);

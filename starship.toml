@@ -1,3 +1,6 @@
+# Starship configuration
+# Single-color graphite prompt: light gray with hierarchy by weight only.
+
 command_timeout = 500
 
 format = "$username$hostname$directory${custom.git_prompt} $character"

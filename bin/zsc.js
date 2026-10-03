@@ -182,18 +182,22 @@ program
   })
   .addHelpText('after', `
 Themes:
-  cobalt (default) · green · blue · purple · orange · red
-  nord · everforest · gruvbox · cream · gray · lightgray · adaptive
-  lblue · lgreen · lorange · lred
+  graphite (default) · retrogreen · black · transparent · cobalt · green · green2
+  blue · purple · orange · red · nord · everforest · gruvbox
+  paper · lcobalt · lgreen · lblue · lpurple · lorange · lred
+  lnord · leverforest · lgruvbox
 
 Auto-theme rules (based on session name):
-  *dev*, *code*      → green
-  *research*, *doc*  → blue
-  *debug*, *test*    → orange
-  *prod*, *urgent*   → red
+  *black*, *trueblack*       → black
+  *transparent*, *clear*     → transparent
+  *dev*, *code*              → green
+  *green2*, *brightgreen*    → green2
+  *research*, *doc*          → blue
+  *debug*, *test*            → orange
+  *prod*, *urgent*           → red
 
 Examples:
-  $ zsc theme nord               Apply to current session
+  $ zsc theme retrogreen        Apply to current session
   $ zsc theme green mysession    Apply to specific session
   $ zsc theme --list             Full theme list with descriptions
 `);

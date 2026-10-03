@@ -649,25 +649,37 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
-# Syntax highlighting — neutral, works on any tmux theme background
-ZSH_HIGHLIGHT_STYLES[command]='bold'
-ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=#cc7832,bold'
-ZSH_HIGHLIGHT_STYLES[builtin]='bold'
-ZSH_HIGHLIGHT_STYLES[alias]='bold,underline'
-ZSH_HIGHLIGHT_STYLES[path]='underline'
-ZSH_HIGHLIGHT_STYLES[globbing]='fg=#9a8060'
-ZSH_HIGHLIGHT_STYLES[precommand]='bold,underline'
-ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=#9a8060'
-ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=#9a8060'
-ZSH_HIGHLIGHT_STYLES[redirection]='bold'
-ZSH_HIGHLIGHT_STYLES[comment]='italic,fg=#707070'
+# Syntax highlighting — single-color graphite palette
+# Base input color: #b8bcc0. Hierarchy uses weight/underline, not hue.
+ZSH_HIGHLIGHT_STYLES[default]='fg=#b8bcc0'
+ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=#b8bcc0,bold,underline'
+ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[command]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[hashed-command]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[builtin]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[function]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[alias]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[suffix-alias]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[global-alias]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[precommand]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[commandseparator]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[redirection]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[path]='fg=#b8bcc0,underline'
+ZSH_HIGHLIGHT_STYLES[path_pathseparator]='fg=#b8bcc0,underline'
+ZSH_HIGHLIGHT_STYLES[globbing]='fg=#b8bcc0,underline'
+ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=#b8bcc0,underline'
+ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=#b8bcc0'
+ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=#b8bcc0'
+ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument]='fg=#b8bcc0'
+ZSH_HIGHLIGHT_STYLES[back-quoted-argument]='fg=#b8bcc0,underline'
+ZSH_HIGHLIGHT_STYLES[comment]='fg=#6f767d,italic'
 
-# Autosuggestions — neutral grey
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#707070'
+# Autosuggestions — muted graphite
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#6f767d'
 
-# History substring search — bold only, no vivid colors
-HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND='bold'
-HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND='fg=#cc7832'
+# History substring search
+HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND='fg=#b8bcc0,bold'
+HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND='fg=#b8bcc0,bold,underline'
 
 # FZF integration (if available)
 if [ -f /usr/share/fzf/shell/key-bindings.zsh ]; then
@@ -729,13 +741,14 @@ th() {
     echo ""
     echo "  AVAILABLE THEMES"
     echo "  ------------------------------------"
-    echo "  cobalt  green  blue  purple  orange"
+    echo "  cobalt  green  green2  blue  purple  orange"
     echo "  red     nord   everforest   gruvbox"
     echo "  cream"
     echo ""
     echo "  AUTO THEMES (from session name)"
     echo "  ------------------------------------"
     echo "  *dev* *code*     → green"
+    echo "  *green2*         → green2"
     echo "  *research* *doc* → blue"
     echo "  *debug* *test*   → orange"
     echo "  *prod* *urgent*  → red"
@@ -943,13 +956,14 @@ th() {
     echo ""
     echo "  AVAILABLE THEMES"
     echo "  ------------------------------------"
-    echo "  cobalt  green  blue  purple  orange"
+    echo "  cobalt  green  green2  blue  purple  orange"
     echo "  red     nord   everforest   gruvbox"
     echo "  cream"
     echo ""
     echo "  AUTO THEMES (from session name)"
     echo "  ------------------------------------"
     echo "  *dev* *code*     → green"
+    echo "  *green2*         → green2"
     echo "  *research* *doc* → blue"
     echo "  *debug* *test*   → orange"
     echo "  *prod* *urgent*  → red"
@@ -974,29 +988,41 @@ EOF
     fi
 
     # Check neutral syntax highlighting
-    if ! grep -q "ZSH_HIGHLIGHT_STYLES\[command\]='bold'" "$ZSHRC"; then
-        echo "  + Updating zsh-syntax-highlighting to neutral styles"
+    if ! grep -q "ZSH_HIGHLIGHT_STYLES\[default\]='fg=#b8bcc0'" "$ZSHRC"; then
+        echo "  + Updating zsh-syntax-highlighting to single-color graphite styles"
         cat >> "$ZSHRC" << 'EOF'
 
-# Syntax highlighting — neutral, works on any tmux theme background
-ZSH_HIGHLIGHT_STYLES[command]='bold'
-ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=#cc7832,bold'
-ZSH_HIGHLIGHT_STYLES[builtin]='bold'
-ZSH_HIGHLIGHT_STYLES[alias]='bold,underline'
-ZSH_HIGHLIGHT_STYLES[path]='underline'
-ZSH_HIGHLIGHT_STYLES[globbing]='fg=#9a8060'
-ZSH_HIGHLIGHT_STYLES[precommand]='bold,underline'
-ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=#9a8060'
-ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=#9a8060'
-ZSH_HIGHLIGHT_STYLES[redirection]='bold'
-ZSH_HIGHLIGHT_STYLES[comment]='italic,fg=#707070'
+# Syntax highlighting — single-color graphite palette
+# Base input color: #b8bcc0. Hierarchy uses weight/underline, not hue.
+ZSH_HIGHLIGHT_STYLES[default]='fg=#b8bcc0'
+ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=#b8bcc0,bold,underline'
+ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[command]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[hashed-command]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[builtin]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[function]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[alias]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[suffix-alias]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[global-alias]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[precommand]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[commandseparator]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[redirection]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[path]='fg=#b8bcc0,underline'
+ZSH_HIGHLIGHT_STYLES[path_pathseparator]='fg=#b8bcc0,underline'
+ZSH_HIGHLIGHT_STYLES[globbing]='fg=#b8bcc0,underline'
+ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=#b8bcc0,underline'
+ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=#b8bcc0'
+ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=#b8bcc0'
+ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument]='fg=#b8bcc0'
+ZSH_HIGHLIGHT_STYLES[back-quoted-argument]='fg=#b8bcc0,underline'
+ZSH_HIGHLIGHT_STYLES[comment]='fg=#6f767d,italic'
 
-# Autosuggestions — neutral grey
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#707070'
+# Autosuggestions — muted graphite
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#6f767d'
 
-# History substring search — bold only, no vivid colors
-HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND='bold'
-HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND='fg=#cc7832'
+# History substring search
+HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND='fg=#b8bcc0,bold'
+HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND='fg=#b8bcc0,bold,underline'
 EOF
         CHANGES_MADE=true
     fi
@@ -1057,7 +1083,26 @@ fi
 EOF
         CHANGES_MADE=true
     elif ! tail -15 "$ZSHRC" | grep -q "zoxide init zsh"; then
-        echo "  ⚠️  zoxide init found but not at end of file — manually move to end of .zshrc"
+        echo "  + Moving zoxide init to end of file (required to be last)"
+        python3 - "$ZSHRC" <<'PYEOF'
+import re, sys
+path = sys.argv[1]
+with open(path) as f:
+    content = f.read()
+# Preserve the user's eval command (e.g. --cmd cd)
+m = re.search(r'eval "\$\(zoxide init zsh[^)]*\)"', content)
+cmd = m.group(0) if m else 'eval "$(zoxide init zsh)"'
+# Remove existing zoxide block: optional comment lines + if command -v zoxide...fi
+content = re.sub(
+    r'\n(?:#[^\n]*\n)*if command -v zoxide &> /dev/null; then\n[^\n]*zoxide[^\n]*\nfi',
+    '', content
+)
+content = content.rstrip('\n') + '\n'
+content += '\n# Zoxide initialization (must be last)\nif command -v zoxide &> /dev/null; then\n    ' + cmd + '\nfi\n'
+with open(path, 'w') as f:
+    f.write(content)
+PYEOF
+        CHANGES_MADE=true
     fi
 
     if [ "$CHANGES_MADE" = true ]; then
@@ -1397,7 +1442,7 @@ install_tmux() {
         chmod +x "$HOME/.tmux/scripts/copy-to-clipboard.sh"
     fi
 
-    echo "✓ Tmux themes installed (graphite, paper, cobalt, green, blue, purple, orange, red, nord, everforest, gruvbox + light variants)"
+    echo "✓ Tmux themes installed (black, transparent, graphite, retrogreen, cobalt, green, green2, blue, purple, orange, red, nord, everforest, gruvbox + light variants)"
 
     # Install TPM plugins by cloning directly (no tmux server required)
     echo "Installing TPM plugins..."

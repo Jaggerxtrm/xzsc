@@ -24,9 +24,12 @@ async function installTmuxThemes(configManager, logger, options = {}) {
 
   const scriptsDir = path.join(tmuxDir, 'scripts');
   await fs.ensureDir(scriptsDir);
-  const gitPaneStatus = path.join(options.scriptDir, 'data', 'git-pane-status.sh');
-  if (await fs.pathExists(gitPaneStatus)) {
-    await copyFromData(options.scriptDir, 'git-pane-status.sh', path.join(scriptsDir, 'git-pane-status.sh'), logger, { executable: true, backup: true });
+
+  for (const scriptName of ['git-pane-status.sh', 'copy-to-clipboard.sh']) {
+    const scriptPath = path.join(options.scriptDir, 'data', scriptName);
+    if (await fs.pathExists(scriptPath)) {
+      await copyFromData(options.scriptDir, scriptName, path.join(scriptsDir, scriptName), logger, { executable: true, backup: true });
+    }
   }
 
   const copyToClipboard = path.join(options.scriptDir, 'data', 'copy-to-clipboard.sh');

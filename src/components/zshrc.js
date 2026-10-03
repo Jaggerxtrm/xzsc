@@ -19,7 +19,32 @@ async function configureZshrc(configManager, logger, options = {}) {
 
   await copyFromData(options.scriptDir, 'zshrc', zshrcPath, logger, { backup: true });
 
-  const tmuxFunction = `\n# Apply tmux theme to current session\nttheme() {\n  local theme="\${1:-graphite}"\n  if [ -z \"$TMUX\" ]; then\n    echo \"ttheme: not inside a tmux session\"\n    return 1\n  fi\n  local session\n  session=$(tmux display-message -p '#S' 2>/dev/null)\n  bash \"$HOME/.tmux/themes.sh\" \"$theme\" \"$session\"\n}\n`;
+  const tmuxFunction = `
+# Apply tmux theme to current session
+ttheme() {
+  local session theme bar_style
+  session=$(tmux display-message -p '#S' 2>/dev/null)
+  if [ -z "$session" ]; then
+    echo "No active tmux session"
+    return 1
+  fi
+  if [ -z "$1" ]; then
+    echo "Usage: ttheme <theme> [bar-style]"
+    echo "Themes: black, transparent, graphite, retrogreen, paper, cobalt, green, green2, blue, purple, orange, red"
+    echo "        nord, everforest, gruvbox (dark)"
+    echo "        lcobalt, lgreen, lblue, lpurple, lorange, lred, lnord, leverforest, lgruvbox (light)"
+    echo "Bar styles: inverse (default), theme, transparent, dark"
+    return 1
+  fi
+  theme="$1"
+  if [ -z "$2" ] && [[ "$theme" == "retrogreen" || "$theme" == "phosphor" || "$theme" == "retro-green" || "$theme" == "crt" || "$theme" == "terminal-green" ]]; then
+    bar_style="theme"
+  else
+    bar_style="\${2:-inverse}"
+  fi
+  "$HOME/.tmux/themes.sh" "$theme" "$session" "$bar_style"
+}
+`;
 
   const current = await fs.readFile(zshrcPath, 'utf8');
   if (!current.includes('ttheme()')) {

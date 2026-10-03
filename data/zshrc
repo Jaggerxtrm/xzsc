@@ -21,32 +21,43 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 # ============================================
-# SYNTAX HIGHLIGHTING — Adaptive for light/dark backgrounds
+# SYNTAX HIGHLIGHTING — single-color graphite palette
 # ============================================
-# Uses ANSI colors; fg=8 (bright black) is adaptive gray
+# Base input color: #b8bcc0. Hierarchy uses weight/underline, not hue.
 
-ZSH_HIGHLIGHT_STYLES[command]='bold'
-ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=red,bold'
-ZSH_HIGHLIGHT_STYLES[builtin]='bold'
-ZSH_HIGHLIGHT_STYLES[alias]='bold,underline'
-ZSH_HIGHLIGHT_STYLES[path]='underline'
-ZSH_HIGHLIGHT_STYLES[globbing]='fg=yellow'
-ZSH_HIGHLIGHT_STYLES[precommand]='bold,underline'
-ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=yellow'
-ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=yellow'
-ZSH_HIGHLIGHT_STYLES[redirection]='bold'
-ZSH_HIGHLIGHT_STYLES[comment]='fg=8'
+ZSH_HIGHLIGHT_STYLES[default]='fg=#b8bcc0'
+ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=#b8bcc0,bold,underline'
+ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[command]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[hashed-command]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[builtin]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[function]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[alias]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[suffix-alias]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[global-alias]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[precommand]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[commandseparator]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[redirection]='fg=#b8bcc0,bold'
+ZSH_HIGHLIGHT_STYLES[path]='fg=#b8bcc0,underline'
+ZSH_HIGHLIGHT_STYLES[path_pathseparator]='fg=#b8bcc0,underline'
+ZSH_HIGHLIGHT_STYLES[globbing]='fg=#b8bcc0,underline'
+ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=#b8bcc0,underline'
+ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=#b8bcc0'
+ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=#b8bcc0'
+ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument]='fg=#b8bcc0'
+ZSH_HIGHLIGHT_STYLES[back-quoted-argument]='fg=#b8bcc0,underline'
+ZSH_HIGHLIGHT_STYLES[comment]='fg=#6f767d,italic'
 
 # ============================================
-# AUTOSUGGESTIONS — Adaptive
+# AUTOSUGGESTIONS — muted graphite
 # ============================================
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#6f767d'
 
 # ============================================
 # HISTORY SUBSTRING SEARCH
 # ============================================
-HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND='bold'
-HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND='fg=red'
+HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND='fg=#b8bcc0,bold'
+HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND='fg=#b8bcc0,bold,underline'
 
 # ============================================
 # FZF integration
@@ -130,20 +141,27 @@ alias ts='~/.local/bin/tmux-session 2>/dev/null || tmux-session'
 
 # Apply theme to current tmux session
 ttheme() {
-    local session
+    local session theme bar_style
     session=$(tmux display-message -p '#S' 2>/dev/null)
     if [ -z "$session" ]; then
         echo "No active tmux session"
         return 1
     fi
     if [ -z "$1" ]; then
-        echo "Usage: ttheme <theme>"
-        echo "Themes: graphite, paper, cobalt, green, blue, purple, orange, red"
+        echo "Usage: ttheme <theme> [bar-style]"
+        echo "Themes: black, transparent, graphite, retrogreen, paper, cobalt, green, green2, blue, purple, orange, red"
         echo "        nord, everforest, gruvbox (dark)"
         echo "        lcobalt, lgreen, lblue, lpurple, lorange, lred, lnord, leverforest, lgruvbox (light)"
+        echo "Bar styles: inverse (default), theme, transparent, dark"
         return 1
     fi
-    bash -c "source ~/.tmux/themes.sh && apply_theme '$1' '$session'"
+    theme="$1"
+    if [ -z "$2" ] && [[ "$theme" == "retrogreen" || "$theme" == "phosphor" || "$theme" == "retro-green" || "$theme" == "crt" || "$theme" == "terminal-green" ]]; then
+        bar_style="theme"
+    else
+        bar_style="${2:-inverse}"
+    fi
+    ~/.tmux/themes.sh "$theme" "$session" "$bar_style"
 }
 
 # Tmux help
@@ -158,14 +176,17 @@ th() {
     echo "  tw           new window"
     echo "  tsp          split vertical (↕)"
     echo "  tsh          split horizontal (↔)"
-    echo "  ttheme <n>   apply theme to session"
+    echo "  ttheme <theme> [bar]  apply theme; bar = inverse/theme/transparent/dark"
     echo ""
     echo "  DARK THEMES (accent colors)"
     echo "  ────────────────────────────────────"
-    echo "  graphite (neutral)  cobalt (#5f87a8)"
-    echo "  green/code (#282c33) blue (#7aa2d2)"
-    echo "  purple (#b294d2)    orange (#d7a65f)"
-    echo "  red (#d38686)       nord (#88c0d0)"
+    echo "  black (#000000)     transparent (terminal bg)"
+    echo "  graphite (neutral)"
+    echo "  cobalt (#5f87a8)    green/code (#282c33)"
+    echo "  green2 (#004d27)"
+    echo "  blue (#0b2a5b)      purple (#32104d)"
+    echo "  red (#4a1010)       orange (#d7a65f)"
+    echo "  nord (#88c0d0)"
     echo "  everforest (#a7c080) gruvbox (#fabd2f)"
     echo ""
     echo "  LIGHT THEMES (same accents)"
@@ -178,7 +199,10 @@ th() {
     echo ""
     echo "  AUTO-THEME (from session name)"
     echo "  ────────────────────────────────────"
+    echo "  *black* *trueblack*         → black (#000000)"
+    echo "  *transparent* *clear*       → transparent"
     echo "  *dev* *code* *claude* *ai*  → green/code (#282c33)"
+    echo "  *green2* *brightgreen*       → green2 (#004d27)"
     echo "  *research* *doc* *read*     → blue"
     echo "  *test* *debug*              → orange"
     echo "  *prod* *urgent* *live*      → red"
