@@ -1,17 +1,26 @@
 
-## [Unreleased]
+# Changelog
+
+## v4.1.5 - 2026-10-03
+
+### Bug Fixes
+
+- **tmux clipboard over SSH/VPS**: copy bindings pass the client tty to `copy-to-clipboard.sh`, clipboard-relevant env vars are refreshed from the tmux server, and a reverse-tunnel broadcast bridge (ports 8377-8380) delivers selections to every machine running a listener; OSC 52 fallback now targets only the triggering client.
+- **zsh**: `ttheme` bar style defaults to each theme's native bar (`theme`) instead of inverse; help-text colors match `themes.sh`; zoxide doctor silenced.
+
+### New Features
+
+- **tmux agent HUD**: ship `agent-hud.sh` (bound to `prefix A`) — glanceable live view of agent panes across all sessions; installed by `install.sh`.
+- **tmux session picker**: full-screen classic launcher on `prefix s`, compact modes on `g`/`G`, sidebar navigator on `v`.
+- **tmux status bar**: single-line bar with rounded-pill active window; focused pane gets a label chip via `pane-border-status top`.
 
 ### Project maintenance
 
-- **Sync xtrm v0.9.0 assets** ([89e3303](https://github.com/Jaggerxtrm/xzsc/commit/89e33037cf1fbe776861892dd7a4bcda390ecd74))
-
-
-- **Add git-cliff config and changelog** ([9830505](https://github.com/Jaggerxtrm/xzsc/commit/9830505a5e5ef8021b4fce20ddc8192b82c15fc9))
+- **Sync shipped config with live `~/.tmux.conf` and themes**: graphite `#141414` status/pane styling, theme palette updates (graphite `#181818`, orange `#5b2c0b`), `git-pane-status.sh` fast short/branch modes, starship graphite `#b8bcc0` prompt ([08e7ec4](https://github.com/Jaggerxtrm/xzsc/commit/08e7ec48224b7594e3434e64dfa907b6cf097296))
+- **Sync xtrm v0.9.0 assets** ([b41a315](https://github.com/Jaggerxtrm/xzsc/commit/b41a3158a2aa8462f2e9b028d704e10b3390fe55))
+- **Add git-cliff config and changelog** ([d9f7a0e](https://github.com/Jaggerxtrm/xzsc/commit/d9f7a0e9bbee07cfe9ae0c7ff7b3a3c17b1ec2bd))
 
   Generic type-based parsers; repo-specific scopes to be tuned (see P0 bead).
-
-
-# Changelog
 
 ## v4.1.3 - 2026-05-08
 
