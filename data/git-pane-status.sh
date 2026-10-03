@@ -3,6 +3,7 @@ set -u
 
 PANE_ID="${1:-}"
 PANE_PATH="${2:-}"
+MODE="${3:-}"
 
 # Prefer resolving path from pane id (more reliable across focus/worktree changes)
 if [ -n "$PANE_ID" ] && command -v tmux >/dev/null 2>&1; then
@@ -58,7 +59,43 @@ command -v git >/dev/null 2>&1 || {
   exit 0
 }
 
-TOPLEVEL="$(run_git -C "$PANE_PATH" rev-parse --show-toplevel)"
+# Fast branch-only mode for per-pane borders: no status porcelain, no stash.
+if [ "$MODE" = "branch" ]; then
+  BR="$(run_git -C "$PANE_PATH" symbolic-ref --short HEAD)"
+  if [ -z "$BR" ]; then
+    TOP="$(run_git -C "$PANE_PATH" rev-parse --show-toplevel)"
+    [ -n "$TOP" ] && BR="$(basename "$TOP")"
+  fi
+  [ -n "$BR" ] && printf " %s" "$BR"
+  exit 0
+fi
+
+# Fast status-bar mode: "<repo or cwd> <branch-octicon> <branch>" - no full path,
+# no status porcelain, no stash.
+if [ "$MODE" = "short" ]; then
+  TOP="$(run_git -C "$PANE_PATH" rev-parse --show-toplevel)"
+  if [ -z "$TOP" ]; then
+    printf "%s" "$(basename "$PANE_PATH")"
+    exit 0
+  fi
+  NAME="$(basename "$TOP")"
+  BR="$(run_git -C "$PANE_PATH" symbolic-ref --short HEAD)"
+  [ -z "$BR" ] && BR="detached"
+  printf "%s  %s" "$NAME" "$BR"
+  exit 0
+fi
+
+# Resolve toplevel + git-dir together. If the caller already knows the
+# toplevel (the session picker resolves it first), trust it and save a
+# rev-parse; otherwise fetch both values in a single git invocation.
+if [ -n "${TMUX_GIT_TOPLEVEL:-}" ]; then
+  TOPLEVEL="$TMUX_GIT_TOPLEVEL"
+  GIT_DIR="$(run_git -C "$PANE_PATH" rev-parse --git-dir)"
+else
+  TG="$(run_git -C "$PANE_PATH" rev-parse --show-toplevel --git-dir)"
+  TOPLEVEL="${TG%%$'\n'*}"
+  GIT_DIR="${TG#*$'\n'}"
+fi
 if [ -z "$TOPLEVEL" ]; then
   path_segment
   exit 0
@@ -110,9 +147,13 @@ while IFS= read -r line; do
   esac
 done <<< "$STATUS_OUT"
 
-GIT_DIR="$(run_git -C "$PANE_PATH" rev-parse --git-dir)"
+# GIT_DIR was resolved together with TOPLEVEL above. Resolve a relative
+# git-dir against the toplevel so the file tests land correctly regardless of
+# the caller's cwd (previously it stayed relative, silently disabling op
+# detection when cwd != PANE_PATH).
 OP=""
 if [ -n "$GIT_DIR" ]; then
+  [ "${GIT_DIR#/}" = "$GIT_DIR" ] && GIT_DIR="$TOPLEVEL/$GIT_DIR"
   [ -d "$GIT_DIR/rebase-merge" ] || [ -d "$GIT_DIR/rebase-apply" ] && OP="REBASE"
   [ -f "$GIT_DIR/MERGE_HEAD" ] && OP="MERGE"
   [ -f "$GIT_DIR/CHERRY_PICK_HEAD" ] && OP="PICK"
@@ -120,12 +161,20 @@ if [ -n "$GIT_DIR" ]; then
   [ -f "$GIT_DIR/BISECT_LOG" ] && OP="BISECT"
 fi
 
+# Skip the stash rev-list fork entirely when no stash ref/reflog exists. For
+# linked worktrees the stash lives in the common dir, so derive it from the
+# worktree gitdir without a git fork: <repo>/.git/worktrees/<name> -> <repo>/.git.
 STASH=0
-if STASH_RAW="$(run_git -C "$PANE_PATH" rev-list --walk-reflogs --count refs/stash)"; then
-  case "$STASH_RAW" in
-    ''|*[!0-9]*) STASH=0 ;;
-    *) STASH=$STASH_RAW ;;
-  esac
+if [ -n "$GIT_DIR" ]; then
+  stash_dir="$GIT_DIR"
+  case "$GIT_DIR" in */.git/worktrees/*) stash_dir="${GIT_DIR%/worktrees/*}" ;; esac
+  if [ -e "$stash_dir/refs/stash" ] || [ -e "$stash_dir/logs/refs/stash" ]; then
+    STASH_RAW="$(run_git -C "$PANE_PATH" rev-list --walk-reflogs --count refs/stash)"
+    case "$STASH_RAW" in
+      ''|*[!0-9]*) STASH=0 ;;
+      *) STASH=$STASH_RAW ;;
+    esac
+  fi
 fi
 
 out="$REPO_NAME $I_BRANCH ${BRANCH:-?}"
@@ -138,6 +187,11 @@ out="$REPO_NAME $I_BRANCH ${BRANCH:-?}"
 [ "$CONFLICT" -gt 0 ] && out+=" !$CONFLICT"
 [ "$STASH" -gt 0 ] && out+=" *$STASH"
 [ -n "$OP" ] && out+=" $OP"
+
+if [ "$MODE" = "compact" ]; then
+  printf "%s" "$(short_path "$PANE_PATH") $I_BRANCH ${BRANCH:-?}"
+  exit 0
+fi
 
 out+=" $I_PATH $(short_path "$PANE_PATH")"
 

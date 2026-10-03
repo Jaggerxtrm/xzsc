@@ -11,7 +11,7 @@ Graphite-based, eye-friendly theme system with consistent visual hierarchy.
   - Strong text = current/highlight
   - Muted text = inactive/secondary
 - **Dark/light parity** for every accent
-- **Status bar style** defaults to inverse medium gray/dark text and can be changed independently
+- **Status bar style** defaults to a dark neutral bar and can be changed independently
 
 ---
 
@@ -44,11 +44,11 @@ The revised blue/red/purple themes use visibly colored backgrounds with brighter
 | `graphite` | `#6f767d` (neutral) | **Default dark**, general use |
 | `retrogreen` | `#33ff66` text on graphite, near-invisible borders | Old-school green terminal look |
 | `cobalt` | `#5f87a8` | Alternative neutral |
-| `green` | `#282c33` background, `#98c379` accent | Coding, development, AI |
+| `green` | `#98c379` | Coding, development, AI |
 | `green2` | `#004d27` background, white/light foregrounds | Green background modeled after `blue` |
 | `blue` | `#0b2a5b` background, `#5c9cff` accent | Research, learning; visible blue |
 | `purple` | `#32104d` background, `#d56bff` accent | Creative, writing; visible purple |
-| `orange` | `#d7a65f` | Testing, debugging |
+| `orange` | `#5b2c0b` background | Testing, debugging |
 | `red` | `#4a1010` background, `#ff5c5c` accent | Production, urgent; visible red |
 | `nord` | `#88c0d0` | Arctic, minimal |
 | `everforest` | `#a7c080` | Nature-inspired |
@@ -71,9 +71,9 @@ The revised blue/red/purple themes use visibly colored backgrounds with brighter
 | Light | Strong (`#2f3336`) | Subtle (`#e6e6e2`–`#f2dddd`) |
 
 ### Status Bar
-- Default bar style = inverse: `bg=#9a9a9a,fg=#101010`
+- Default bar style = theme: each theme's own bar colors, which match its background exactly
 - Bar style is independent from the pane theme
-- `ttheme <theme> theme` keeps the theme-native bar
+- `ttheme <theme> theme` (default) keeps the theme-native bar (bar bg = theme bg)
 - `ttheme <theme> transparent` uses `bg=default`
 - `ttheme <theme> dark` uses a dark neutral bar
 
@@ -103,7 +103,6 @@ lorange  lred      lnord     leverforest  lgruvbox
 | `green2`, `brightgreen`, `bright-green` | green2 (`#004d27`) |
 | `black`, `trueblack`, `totalblack` | black |
 | `transparent`, `trans`, `clear` | transparent |
-| `retrogreen`, `phosphor`, `terminal-green`, `crt` | retrogreen |
 | `research`, `learn`, `study`, `doc`, `read` | blue |
 | `creative`, `write`, `note`, `idea`, `brain` | purple |
 | `test`, `debug`, `spec`, `check` | orange |
@@ -128,13 +127,13 @@ lorange  lred      lnord     leverforest  lgruvbox
 ## Usage
 
 ```bash
-# Apply to current session with default inverse bottom bar
+# Apply to current session with default theme bottom bar
 ttheme <theme-name>
 
 # Apply to current session with a specific bottom bar
 ttheme <theme-name> <bar-style>
 
-# Bar styles: inverse (default), theme, transparent, dark
+# Bar styles: theme (default), transparent, dark, inverse
 # Examples:
 ttheme transparent
 ttheme graphite theme
@@ -151,9 +150,9 @@ ttheme transparent transparent
 
 | Element | Role | Color Source |
 |---------|------|--------------|
-| `status-style` | Bottom bar text/background | Bar style override, default inverse |
-| `window-status-style` | Bottom bar inactive window | Bar style override, default inverse |
-| `window-status-current-style` | Bottom bar active window | Bar style override, default inverse |
+| `status-style` | Bottom bar text/background | Bar style override, default theme |
+| `window-status-style` | Bottom bar inactive window | Bar style override, default theme |
+| `window-status-current-style` | Bottom bar active window | Bar style override, default theme |
 | `window-style` | Muted text | Global palette |
 | `window-active-style` | Primary text | Global palette |
 | `pane-border-style` | Low contrast | Structural |

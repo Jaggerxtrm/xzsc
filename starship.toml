@@ -7,12 +7,12 @@ format = "$username$hostname$directory${custom.git_prompt} $character"
 right_format = ""
 
 [character]
-success_symbol = "[\\$](bold yellow)"
-error_symbol = "[\\$](bold yellow)"
+success_symbol = "[\\$](bold #b8bcc0)"
+error_symbol = "[\\$](bold #b8bcc0)"
 
 [username]
-style_user = "bold yellow"
-style_root = "bold yellow"
+style_user = "bold #b8bcc0"
+style_root = "bold #b8bcc0"
 format = "[$user@]($style)"
 disabled = false
 show_always = true
@@ -20,7 +20,7 @@ show_always = true
 [hostname]
 ssh_only = false
 format = "[$hostname:]($style)"
-style = "bold yellow"
+style = "bold #b8bcc0"
 disabled = false
 
 [directory]
@@ -29,14 +29,14 @@ truncate_to_repo = false
 home_symbol = "~"
 read_only = ""
 format = "[$path]($style)"
-style = "bold yellow"
+style = "bold #b8bcc0"
 
 [custom.git_prompt]
 when = "git rev-parse --is-inside-work-tree >/dev/null 2>&1"
 shell = ["bash", "--noprofile", "--norc"]
-command = "branch=$(git symbolic-ref --quiet --short HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null) || exit 0; if [ -d .git/rebase-merge ]; then cur=$(cat .git/rebase-merge/msgnum 2>/dev/null); total=$(cat .git/rebase-merge/end 2>/dev/null); echo \"(${branch} rebase ${cur}/${total})\"; exit 0; fi; if [ -d .git/rebase-apply ]; then cur=$(cat .git/rebase-apply/next 2>/dev/null); total=$(cat .git/rebase-apply/last 2>/dev/null); echo \"(${branch} rebase ${cur}/${total})\"; exit 0; fi; mark=; git diff --quiet --ignore-submodules -- || mark='*'; git diff --cached --quiet --ignore-submodules -- || mark='*'; upstream=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null || true); aheadBehind=; if [ -n \"$upstream\" ]; then set -- $(git rev-list --left-right --count \"$upstream\"...HEAD 2>/dev/null); behind=$1; ahead=$2; if [ \"$ahead\" -gt 0 ] && [ \"$behind\" -gt 0 ]; then aheadBehind=\"↕${ahead}/${behind}\"; elif [ \"$ahead\" -gt 0 ]; then aheadBehind=\"↑${ahead}\"; elif [ \"$behind\" -gt 0 ]; then aheadBehind=\"↓${behind}\"; fi; fi; echo \"(${branch}${mark}${aheadBehind})\""
+command = '''branch=$(git symbolic-ref --quiet --short HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null) || exit 0; if [ -d .git/rebase-merge ]; then cur=$(cat .git/rebase-merge/msgnum 2>/dev/null); total=$(cat .git/rebase-merge/end 2>/dev/null); echo "(${branch} rebase ${cur}/${total})"; exit 0; fi; if [ -d .git/rebase-apply ]; then cur=$(cat .git/rebase-apply/next 2>/dev/null); total=$(cat .git/rebase-apply/last 2>/dev/null); echo "(${branch} rebase ${cur}/${total})"; exit 0; fi; mark=; git diff --quiet --ignore-submodules -- || mark='*'; git diff --cached --quiet --ignore-submodules -- || mark='*'; upstream=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null || true); aheadBehind=; if [ -n "$upstream" ]; then set -- $(git rev-list --left-right --count "$upstream"...HEAD 2>/dev/null); behind=$1; ahead=$2; if [ "$ahead" -gt 0 ] && [ "$behind" -gt 0 ]; then aheadBehind="↕${ahead}/${behind}"; elif [ "$ahead" -gt 0 ]; then aheadBehind="↑${ahead}"; elif [ "$behind" -gt 0 ]; then aheadBehind="↓${behind}"; fi; fi; echo "(${branch}${mark}${aheadBehind})"'''
 format = "$output"
-style = "bold yellow"
+style = "bold #b8bcc0"
 
 [python]
 disabled = true

@@ -114,17 +114,10 @@ fi
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
 # ============================================
-# TELEMETRY DISABLE
-# ============================================
-export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
-export DISABLE_TELEMETRY=1
-export DISABLE_ERROR_REPORTING=1
-
-# ============================================
 # PATH EXTRAS
 # ============================================
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
-export PATH=/home/dawid/.opencode/bin:$PATH
+export PATH="$HOME/.opencode/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 
 # ============================================
@@ -152,15 +145,11 @@ ttheme() {
         echo "Themes: black, transparent, graphite, retrogreen, paper, cobalt, green, green2, blue, purple, orange, red"
         echo "        nord, everforest, gruvbox (dark)"
         echo "        lcobalt, lgreen, lblue, lpurple, lorange, lred, lnord, leverforest, lgruvbox (light)"
-        echo "Bar styles: inverse (default), theme, transparent, dark"
+        echo "Bar styles: theme (default), transparent, dark, inverse"
         return 1
     fi
     theme="$1"
-    if [ -z "$2" ] && [[ "$theme" == "retrogreen" || "$theme" == "phosphor" || "$theme" == "retro-green" || "$theme" == "crt" || "$theme" == "terminal-green" ]]; then
-        bar_style="theme"
-    else
-        bar_style="${2:-inverse}"
-    fi
+    bar_style="${2:-theme}"
     ~/.tmux/themes.sh "$theme" "$session" "$bar_style"
 }
 
@@ -176,16 +165,16 @@ th() {
     echo "  tw           new window"
     echo "  tsp          split vertical (↕)"
     echo "  tsh          split horizontal (↔)"
-    echo "  ttheme <theme> [bar]  apply theme; bar = inverse/theme/transparent/dark"
+    echo "  ttheme <theme> [bar]  apply theme; bar = theme(default)/transparent/dark/inverse"
     echo ""
     echo "  DARK THEMES (accent colors)"
     echo "  ────────────────────────────────────"
     echo "  black (#000000)     transparent (terminal bg)"
     echo "  graphite (neutral)"
-    echo "  cobalt (#5f87a8)    green/code (#282c33)"
+    echo "  cobalt (#5f87a8)    green/code (#98c379)"
     echo "  green2 (#004d27)"
     echo "  blue (#0b2a5b)      purple (#32104d)"
-    echo "  red (#4a1010)       orange (#d7a65f)"
+    echo "  red (#4a1010)       orange bg (#5b2c0b)"
     echo "  nord (#88c0d0)"
     echo "  everforest (#a7c080) gruvbox (#fabd2f)"
     echo ""
@@ -201,7 +190,7 @@ th() {
     echo "  ────────────────────────────────────"
     echo "  *black* *trueblack*         → black (#000000)"
     echo "  *transparent* *clear*       → transparent"
-    echo "  *dev* *code* *claude* *ai*  → green/code (#282c33)"
+    echo "  *dev* *code* *claude* *ai*  → green/code (#98c379)"
     echo "  *green2* *brightgreen*       → green2 (#004d27)"
     echo "  *research* *doc* *read*     → blue"
     echo "  *test* *debug*              → orange"
@@ -211,8 +200,9 @@ th() {
 }
 
 # ============================================
-# ZOXIDE (must be last)
+# ZOXIDE (must be last — do not add anything after this block)
 # ============================================
+export _ZO_DOCTOR=0
 if command -v zoxide &> /dev/null; then
     eval "$(zoxide init zsh --cmd cd)"
 fi

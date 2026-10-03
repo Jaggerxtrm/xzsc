@@ -1441,6 +1441,10 @@ install_tmux() {
         cp "$SCRIPT_DIR/data/copy-to-clipboard.sh" "$HOME/.tmux/scripts/copy-to-clipboard.sh"
         chmod +x "$HOME/.tmux/scripts/copy-to-clipboard.sh"
     fi
+    if [ -f "$SCRIPT_DIR/data/agent-hud.sh" ]; then
+        cp "$SCRIPT_DIR/data/agent-hud.sh" "$HOME/.tmux/scripts/agent-hud.sh"
+        chmod +x "$HOME/.tmux/scripts/agent-hud.sh"
+    fi
 
     echo "✓ Tmux themes installed (black, transparent, graphite, retrogreen, cobalt, green, green2, blue, purple, orange, red, nord, everforest, gruvbox + light variants)"
 

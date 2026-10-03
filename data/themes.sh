@@ -7,7 +7,8 @@
 apply_theme() {
     local theme="$1"
     local session="$2"
-    local bar_style="${3:-inverse}"
+    local bar_style="${3:-theme}"
+    local pane_bg
 
     # session options (status bar)
     _set()  { tmux set-option -t "$session" "$@"; }
@@ -30,7 +31,7 @@ apply_theme() {
                 ;;
             *)
                 echo "Unknown bar style: $1"
-                echo "Bar styles: inverse (default), theme, transparent, dark"
+                echo "Bar styles: theme (default), transparent, dark, inverse"
                 return 1
                 ;;
         esac
@@ -39,9 +40,9 @@ apply_theme() {
     _apply_bar_style() {
         case "$1" in
             inverse|light|lightgray|lightgrey|bar-light)
-                _set  status-style                'fg=#101010,bg=#9a9a9a'
-                _set  window-status-style         'fg=#202020,bg=#9a9a9a'
-                _set  window-status-current-style 'fg=#101010,bg=#9a9a9a,bold'
+                _set  status-style                'fg=#000000,bg=#ffffff'
+                _set  window-status-style         'fg=#000000,bg=#ffffff'
+                _set  window-status-current-style 'fg=#000000,bg=#ffffff,bold'
                 ;;
             theme|native|none)
                 ;;
@@ -49,6 +50,7 @@ apply_theme() {
                 _set  status-style                'fg=#b8bcc0,bg=default'
                 _set  window-status-style         'fg=#8a8f94,bg=default'
                 _set  window-status-current-style 'fg=#c6cacf,bg=default,bold'
+                _set  message-style               'fg=#c6cacf,bg=default'
                 ;;
             dark)
                 _set  status-style                'fg=#d0d0d0,bg=#202020'
@@ -100,14 +102,14 @@ apply_theme() {
 
         # --- GRAPHITE (DEFAULT DARK - Neutral Accent) ---
         graphite|default|dark|"")
-            # Background: #141414
-            _set  status-style               'fg=#b8bcc0,bg=#141414'
-            _set  window-status-style        'fg=#8a8f94,bg=#141414'
-            _set  window-status-current-style 'fg=#c6cacf,bg=#141414,bold'
-            _setw window-style               'fg=#8a8f94,bg=#141414'
-            _setw window-active-style        'fg=#b8bcc0,bg=#141414'
-            _setw pane-border-style          'fg=#303030,bg=#141414'
-            _setw pane-active-border-style   'fg=#6f767d,bg=#141414'
+            # Background: #181818
+            _set  status-style               'fg=#b8bcc0,bg=#181818'
+            _set  window-status-style        'fg=#8a8f94,bg=#181818'
+            _set  window-status-current-style 'fg=#c6cacf,bg=#181818,bold'
+            _setw window-style               'fg=#8a8f94,bg=#181818'
+            _setw window-active-style        'fg=#b8bcc0,bg=#181818'
+            _setw pane-border-style          'fg=#303030,bg=#181818'
+            _setw pane-active-border-style   'fg=#6f767d,bg=#242424'
             _set  message-style              'fg=#c6cacf,bg=#222222'
             ;;
 
@@ -189,17 +191,17 @@ apply_theme() {
             _set  message-style              'fg=#ffffff,bg=#3f1760'
             ;;
 
-        # --- ORANGE (Testing/Debugging - Accent: #d7a65f) ---
+        # --- ORANGE (Testing/Debugging - Background: #5b2c0b) ---
         orange|test|debug)
-            # Background: #221b16
-            _set  status-style               'fg=#b8bcc0,bg=#221b16'
-            _set  window-status-style        'fg=#8a8f94,bg=#221b16'
-            _set  window-status-current-style 'fg=#c6cacf,bg=#221b16,bold'
-            _setw window-style               'fg=#8a8f94,bg=#221b16'
-            _setw window-active-style        'fg=#b8bcc0,bg=#221b16'
-            _setw pane-border-style          'fg=#2a2a2a,bg=#221b16'
-            _setw pane-active-border-style   'fg=#d7a65f,bg=#221b16'
-            _set  message-style              'fg=#c6cacf,bg=#262626'
+            # Background: #5b2c0b; text forced white
+            _set  status-style               'fg=#ffffff,bg=#5b2c0b'
+            _set  window-status-style        'fg=#ffffff,bg=#5b2c0b'
+            _set  window-status-current-style 'fg=#ffffff,bg=#5b2c0b,bold'
+            _setw window-style               'fg=#ffffff,bg=#5b2c0b'
+            _setw window-active-style        'fg=#ffffff,bg=#5b2c0b'
+            _setw pane-border-style          'fg=#ffffff,bg=#5b2c0b'
+            _setw pane-active-border-style   'fg=#ffffff,bg=#5b2c0b'
+            _set  message-style              'fg=#ffffff,bg=#5b2c0b'
             ;;
 
         # --- RED (Production/Urgent - visible terminal red) ---
@@ -323,7 +325,7 @@ apply_theme() {
             _set  message-style              'fg=#1f1028,bg=#e9d5ff'
             ;;
 
-        # --- LORANGE (Accent: #d7a65f) ---
+        # --- LORANGE (Accent: #fc6701) ---
         lorange)
             # Background: #fbf2e7
             _set  status-style               'fg=#3f4347,bg=#fbf2e7'
@@ -332,7 +334,7 @@ apply_theme() {
             _setw window-style               'fg=#7a8086,bg=#fbf2e7'
             _setw window-active-style        'fg=#3f4347,bg=#fbf2e7'
             _setw pane-border-style          'fg=#d2d6da,bg=#fbf2e7'
-            _setw pane-active-border-style   'fg=#d7a65f,bg=#fbf2e7'
+            _setw pane-active-border-style   'fg=#fc6701,bg=#fbf2e7'
             _set  message-style              'fg=#2f3336,bg=#f2e8dc'
             ;;
 
@@ -402,6 +404,18 @@ apply_theme() {
             ;;
     esac
 
+    # Hide pane-frame glyphs by matching their foreground to the theme's pane
+    # background. pane-border-format (from ~/.tmux.conf) supplies the label color.
+    pane_bg=$(tmux show-options -t "$session" -w -v pane-border-style 2>/dev/null | sed -n 's/.*bg=\([^,]*\).*/\1/p')
+    if [[ -n "$pane_bg" && "$pane_bg" != default ]]; then
+        _setw pane-border-style        "fg=$pane_bg,bg=$pane_bg"
+        _setw pane-active-border-style "fg=$pane_bg,bg=$pane_bg"
+    else
+        # A transparent terminal does not expose its actual RGB background.
+        _setw pane-border-style        'fg=#141414,bg=default'
+        _setw pane-active-border-style 'fg=#141414,bg=default'
+    fi
+
     # Bottom bar style is intentionally independent from pane theme.
     _apply_bar_style "$bar_style"
 
@@ -414,5 +428,5 @@ apply_theme() {
 # Run standalone: bash themes.sh <theme> [session] [bar-style]
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     SESSION="${2:-$(tmux display-message -p '#S' 2>/dev/null)}"
-    apply_theme "$1" "$SESSION" "${3:-inverse}"
+    apply_theme "$1" "$SESSION" "${3:-theme}"
 fi
