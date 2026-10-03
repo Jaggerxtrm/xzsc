@@ -3,9 +3,13 @@
 'use strict';
 
 const path = require('path');
+const fs = require('fs');
+const os = require('os');
 const { program } = require('commander');
 const figlet = require('figlet');
 const chalk = require('chalk');
+const semver = require('semver');
+const axios = require('axios');
 
 // Import commands
 const { install, VALID_COMPONENTS, ALIASES } = require('../src/commands/install');
@@ -35,12 +39,37 @@ function showBanner() {
   console.log(chalk.gray(`Zsh Starship Config CLI v${VERSION}\n`));
 }
 
+// Update check: warn (at most once a day) when the installed package is stale.
+// zsc update installs config from the installed package's data/, so a stale
+// global install silently ships old files — surface it instead.
+const UPDATE_CHECK_FILE = path.join(os.tmpdir(), 'zsc-update-check.json');
+
+async function checkForUpdates() {
+  try {
+    let due = true;
+    if (fs.existsSync(UPDATE_CHECK_FILE)) {
+      const { ts } = JSON.parse(fs.readFileSync(UPDATE_CHECK_FILE, 'utf8'));
+      due = Date.now() - ts > 24 * 60 * 60 * 1000;
+    }
+    if (!due) return;
+    fs.writeFileSync(UPDATE_CHECK_FILE, JSON.stringify({ ts: Date.now() }));
+    const res = await axios.get('https://registry.npmjs.org/@jaggerxtrm%2Fxzsc', { timeout: 2000 });
+    const latest = res.data['dist-tags'] && res.data['dist-tags'].latest;
+    if (latest && semver.gt(latest, VERSION)) {
+      console.log(chalk.yellow(`\n⚠ Update available: v${latest} (installed v${VERSION}) — run: npm i -g @jaggerxtrm/xzsc@latest`));
+    }
+  } catch {
+    // offline / registry error — never block the CLI
+  }
+}
+
 // CLI Program Configuration
 program
   .name('zsc')
   .description('Modern Zsh + Starship + Nerd Fonts setup via npm')
   .version(VERSION, '-v, --version', 'output version number')
-  .helpOption('-h, --help', 'display help for command');
+  .helpOption('-h, --help', 'display help for command')
+  .hook('preAction', async () => { await checkForUpdates(); });
 
 // Global Options
 program
@@ -56,6 +85,12 @@ const mergeOptions = (commandOptions = {}) => ({
   ...program.opts(),
   ...commandOptions
 });
+
+// Commander v12: program.hook does not propagate to subcommands — attach the
+// update check to every subcommand as it is declared below.
+const declareCommand = program.command.bind(program);
+program.command = (...args) =>
+  declareCommand(...args).hook('preAction', async () => { await checkForUpdates(); });
 
 // Commands
 

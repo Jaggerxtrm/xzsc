@@ -1,6 +1,12 @@
 
 # Changelog
 
+## v4.1.7 - 2026-10-03
+
+### New Features
+
+- **Self-update check**: the CLI now warns when the installed package is older than the npm `latest` tag (checked at most once per 24h, never blocks offline). Stale global installs previously kept shipping old config via `zsc update` with no hint anything was wrong.
+
 ## v4.1.6 - 2026-10-03
 
 ### Bug Fixes
